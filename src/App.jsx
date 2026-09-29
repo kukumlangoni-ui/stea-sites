@@ -22,7 +22,7 @@ const SitesAdminApp = lazy(() => import("./sites/admin/SitesAdminApp.jsx"));
 const SitesNotFoundPage = lazy(() => import("./pages/SitesNotFoundPage.jsx"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy.jsx"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy.jsx"));
-import CookieConsentBanner from "./components/stea-code/CookieConsentBanner.jsx";
+import CookieConsentBanner from "./components/shared/CookieConsentBanner.jsx";
 import { useConsentGatedScripts } from "./hooks/useConsentGatedScripts.js";
 
 class LocalErrorBoundary extends Component {

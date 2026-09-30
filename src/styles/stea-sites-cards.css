@@ -59,18 +59,31 @@
   outline: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 180ms ease,
-              box-shadow 180ms ease,
-              background 180ms ease;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              background 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Scroll reveal states ──────────────────────────────────────────────── */
+.stea-website-compact-card.is-hidden-before-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+.stea-website-compact-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .stea-website-compact-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(245, 166, 35, 0.45);
+    transform: translateY(-2px);
+    border-color: var(--gold-soft, rgba(245, 166, 35, 0.25));
     background: #141829;
-    box-shadow: 0 12px 26px -6px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(245, 166, 35, 0.18);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -227,7 +240,7 @@
 @media (hover: hover) and (pointer: fine) {
   .stea-website-compact-card:hover .stea-card-domain-text { color: #CBD5E1; }
   .stea-website-compact-card:hover .stea-card-arrow-icon { color: #F5A623; opacity: 1; transform: translate(1px, -1px); }
-  .stea-website-compact-card:hover .stea-card-icon-wrap { transform: scale(1.04); }
+  .stea-website-compact-card:hover .stea-card-icon-wrap { transform: scale(1.05); }
 }
 
 .stea-card-icon-wrap { transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1); }
@@ -336,6 +349,138 @@
   justify-content: center;
 }
 
+/* ── Skeleton shimmer card ─────────────────────────────────────────────── */
+.stea-website-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #111422 0%, #0C0E18 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 10px 12px;
+  min-height: 112px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  animation: steaSkelFadeIn 300ms ease-out forwards;
+}
+
+@keyframes steaSkelFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.stea-website-card-skeleton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.05) 60%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: steaSkelShimmer 1.4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes steaSkelShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.stea-skel-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 18px;
+  gap: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+.stea-skel-badge {
+  width: 36px;
+  height: 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.stea-skel-star {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  margin-left: auto;
+}
+
+.stea-skel-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.stea-skel-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.stea-skel-title-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stea-skel-title-line {
+  height: 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.stea-skel-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.stea-skel-domain-line {
+  height: 9px;
+  width: 50%;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 600px) {
+  .stea-website-card-skeleton {
+    padding: 8px 10px;
+    min-height: 108px;
+    border-radius: 14px;
+  }
+}
+
 /* ── Respect reduced-motion ────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .stea-website-compact-card,
@@ -351,7 +496,10 @@
     transform: none;
   }
   .sites-category-section-grid > .stea-website-compact-card,
-  .stea-icon-shimmer {
+  .stea-icon-shimmer,
+  .stea-website-card-skeleton::before,
+  .stea-website-card-skeleton {
     animation: none !important;
+    opacity: 1 !important;
   }
 }

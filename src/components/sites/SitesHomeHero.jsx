@@ -427,7 +427,7 @@ export default function SitesHomeHero({
 
       <style>{`
         .sites-home-hero-v2 {
-          padding: 8px 0 6px;
+          padding: 64px 0 48px;
           position: relative;
           flex-shrink: 0;
           z-index: var(--stea-z-hero, 30);
@@ -445,7 +445,7 @@ export default function SitesHomeHero({
           width: 100%;
           max-width: 100%;
           margin: 0 auto;
-          padding: 24px clamp(16px, 2.5vw, 32px) 18px;
+          padding: 40px clamp(20px, 3vw, 40px) 32px;
           border-radius: var(--hero-radius);
           background: radial-gradient(ellipse at 50% -20%, rgba(124, 58, 237, 0.28) 0%, rgba(99, 102, 241, 0.14) 40%, rgba(14, 17, 30, 0.98) 100%), #0D0F1B;
           border: 1px solid rgba(255, 255, 255, 0.12);
@@ -465,7 +465,7 @@ export default function SitesHomeHero({
           flex-direction: column;
           align-items: center;
           text-align: center;
-          gap: 8px;
+          gap: 0;
         }
         .sites-hero-top {
           width: 100%;
@@ -473,6 +473,7 @@ export default function SitesHomeHero({
           align-items: center;
           justify-content: space-between;
           gap: 20px;
+          margin-bottom: 20px;
         }
         .sites-hero-text-col {
           flex: 1;
@@ -481,7 +482,7 @@ export default function SitesHomeHero({
           flex-direction: column;
           align-items: center;
           text-align: center;
-          gap: 8px;
+          gap: 0;
         }
         .sites-hero-stats {
           display: flex;
@@ -525,10 +526,10 @@ export default function SitesHomeHero({
           text-transform: uppercase;
           color: ${TOKENS.goldHi};
           display: inline-block;
-          margin-bottom: -4px;
+          margin-bottom: 10px;
         }
         .sites-hero-title {
-          margin: 0;
+          margin: 0 0 16px;
           font-family: "'Bricolage Grotesque', 'Instrument Sans', system-ui, -apple-system, sans-serif";
           font-size: clamp(24px, 2.4vw, 30px);
           line-height: 1.15;
@@ -545,7 +546,7 @@ export default function SitesHomeHero({
         }
         .sites-hero-subtitle-container .sites-hero-subtitle {
           grid-area: 1 / 1;
-          margin: 0;
+          margin: 0 0 28px;
           max-width: 60ch;
           color: var(--stea-text, #F3F4F6);
           font-size: clamp(13px, 1.4vw, 15px);
@@ -595,7 +596,7 @@ export default function SitesHomeHero({
           position: relative;
           width: 100%;
           max-width: 640px;
-          margin-top: 4px;
+          margin: 0 auto 20px;
           z-index: 30;
         }
         .sites-hero-search-form {
@@ -860,7 +861,7 @@ export default function SitesHomeHero({
           width: 100%;
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 12px;
           padding-top: 2px;
           min-width: 0;
         }
@@ -889,7 +890,7 @@ export default function SitesHomeHero({
           padding: 0;
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 12px;
           flex-wrap: nowrap;
         }
         .sites-trending-chip {
@@ -982,11 +983,17 @@ export default function SitesHomeHero({
           line-height: 1;
         }
 
+        /* Tablet adjustments */
+        @media (max-width: 900px) {
+          .sites-home-hero-v2 { padding: 48px 0 32px; }
+          .sites-hero-atm-card { padding: 32px 20px 24px; }
+        }
         /* Stack stats below text on smaller screens */
         @media (max-width: 760px) {
           .sites-hero-top {
             flex-direction: column;
             gap: 18px;
+            margin-bottom: 16px;
           }
           .sites-hero-stats {
             flex-direction: row;
@@ -1003,11 +1010,12 @@ export default function SitesHomeHero({
         }
         /* Mobile Adjustments (320px - 540px) */
         @media (max-width: 540px) {
-          .sites-home-hero-v2 { padding: 4px 0 2px; }
-          .sites-hero-inner { gap: 8px; }
-          .sites-hero-title { font-size: 32px; }
+          .sites-home-hero-v2 { padding: 32px 0 24px; }
+          .sites-hero-atm-card { --hero-radius: 18px; padding: 24px 16px 20px; }
+          .sites-hero-inner { gap: 0; }
+          .sites-hero-title { font-size: 32px; margin-bottom: 12px; }
           .sites-hero-subtitle { font-size: 11.5px; }
-          .sites-hero-atm-card { --hero-radius: 18px; padding: 18px 14px 16px; }
+          .sites-hero-subtitle-container .sites-hero-subtitle { margin-bottom: 20px; }
           .sites-hero-search-field {
             padding: 2px 2px 2px 10px;
             border-radius: 10px;

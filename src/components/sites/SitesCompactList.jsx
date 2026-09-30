@@ -20,7 +20,7 @@ import { useSitesLanguage } from "../../i18n/index.js";
 import { useResourceActions } from "../../hooks/useResourceActions.js";
 import { SECRET_AFTER_DARK_KEYWORDS } from "../../hooks/useSearch.js";
 import { triggerAgeGateOrNavigate } from "./AgeGateModal.jsx";
-import WebsiteSolutionCard from "../WebsiteSolutionCard.jsx";
+import WebsiteSolutionCard, { WebsiteCardSkeleton } from "../WebsiteSolutionCard.jsx";
 
 function SitesCompactList({
   sites = [],
@@ -171,11 +171,8 @@ function SitesCompactList({
       {/* SKELETON LOADING OR EMPTY OR CARDS */}
       {loading ? (
         <div className="sites-compact-grid" aria-label="Loading websites...">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="stea-card-skeleton">
-              <div className="stea-card-skeleton-stage" />
-              <div className="stea-card-skeleton-footer" />
-            </div>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <WebsiteCardSkeleton key={i} index={i} />
           ))}
         </div>
       ) : !filteredSorted.length ? (
@@ -186,7 +183,7 @@ function SitesCompactList({
         </div>
       ) : (
         <div className="sites-compact-grid">
-          {filteredSorted.map((s) => {
+          {filteredSorted.map((s, idx) => {
             const id = String(s.id || s.slug || s.url);
             const isFav = favSet.has(id);
 
@@ -194,6 +191,7 @@ function SitesCompactList({
               <WebsiteSolutionCard
                 key={id}
                 site={s}
+                index={idx}
                 isFavorite={isFav}
                 onToggleFavorite={() => onToggleFavorite && onToggleFavorite(s, false)}
                 onDetails={() => {

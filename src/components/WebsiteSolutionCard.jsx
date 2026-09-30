@@ -1,119 +1,43 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Globe, Sparkles, Heart, Star, ArrowUpRight } from "lucide-react";
-import LazyImage from "./LazyImage.jsx";
-import { getThumbnailImageStyle } from "../utils/thumbnailDisplay.js";
+import { Star } from "lucide-react";
 import { useTranslation } from "../i18n/index.js";
 import WebsiteIcon from "./sites/WebsiteIcon.jsx";
 import { extractHostname } from "./sites/favicon.js";
 
-export function WebsiteImage({ site, style, className, isModal = false }) {
-  const title = site.name || site.title || "Untitled Website";
-  const firstLetter = (title || "?").charAt(0).toUpperCase();
-  const thumbnailStyle = getThumbnailImageStyle(site);
+/**
+ * WebsiteCardSkeleton — Shimmer skeleton matching the exact card dimensions.
+ * Shows while Firestore data is loading. Uses CSS gradient shimmer.
+ */
+export function WebsiteCardSkeleton({ index = 0 }) {
+  const reducedMotion = typeof window !== "undefined"
+    ? window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    : false;
 
-  // ── Priority-ordered image sources ──
-  const sources = useMemo(() => {
-    const srcList = [];
-    // 1. Best quality banner/thumbnail first
-    if (site.thumbnailUrl) srcList.push({ src: site.thumbnailUrl, isFavicon: false });
-    if (site.bannerUrl)    srcList.push({ src: site.bannerUrl,    isFavicon: false });
-    if (site.imageUrl)     srcList.push({ src: site.imageUrl,     isFavicon: false });
-    if (site.image)        srcList.push({ src: site.image,        isFavicon: false });
-    if (site.coverUrl)     srcList.push({ src: site.coverUrl,     isFavicon: false });
-    if (site.logoUrl)      srcList.push({ src: site.logoUrl,      isFavicon: false });
-    // 2. Favicon / small icon sources
-    if (site.faviconUrl)   srcList.push({ src: site.faviconUrl,   isFavicon: true  });
-
-    let domain = "";
-    try {
-      const url = site.url || site.websiteUrl || site.link || "";
-      if (url) domain = new URL(url).hostname;
-    } catch {}
-
-    if (domain) {
-      srcList.push({ src: `https://www.google.com/s2/favicons?domain=${domain}&sz=128`, isFavicon: true });
-      srcList.push({ src: `https://icons.duckduckgo.com/ip3/${domain}.ico`,             isFavicon: true });
-    }
-    return srcList;
-  }, [site]);
-
-  const [imgIndex, setImgIndex] = useState(0);
-  useEffect(() => { setImgIndex(0); }, [site]);
-  const handleImageError = () => setImgIndex(prev => prev + 1);
-
-  if (imgIndex < sources.length && sources[imgIndex]?.src) {
-    const { src, isFavicon } = sources[imgIndex];
-    if (isFavicon && isModal) {
-      // For hub modal: show favicon centred in a clean card, not stretched
-      return (
-        <div style={{
-          width: "100%", height: "100%",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: "linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%)"
-        }}>
-          <div style={{
-            width: 80, height: 80, borderRadius: 20,
-            background: "#FFFFFF", border: "1px solid #E2E8F0",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.08)", overflow: "hidden"
-          }}>
-            <img
-              src={src} alt={title}
-              loading="lazy"
-              decoding="async"
-              style={{ width: 56, height: 56, objectFit: "contain" }}
-              onError={handleImageError}
-            />
-          </div>
-        </div>
-      );
-    }
-    return (
-      <img
-        src={src}
-        alt={title}
-        loading={isModal ? "eager" : "lazy"}
-        decoding="async"
-        className={className}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: thumbnailStyle.image.objectFit,
-          objectPosition: thumbnailStyle.image.objectPosition,
-          transform: thumbnailStyle.image.transform,
-          transformOrigin: thumbnailStyle.image.transformOrigin,
-          padding: isFavicon ? (isModal ? "15%" : "22%") : "0",
-          background: isFavicon ? "#F1F5F9" : "transparent",
-          display: "block",
-          transition: "transform 220ms ease",
-          ...style
-        }}
-        onError={handleImageError}
-      />
-    );
-  }
-
-  // ── Full fallback ──
-  const finalFallbackSize = isModal ? 72 : 52;
-  const finalFontSize     = isModal ? 32 : 24;
   return (
-    <div style={{
-      width: "100%", height: "100%",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      background: isModal
-        ? "linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%)"
-        : "#F1F5F9"
-    }}>
-      <div style={{
-        width: finalFallbackSize, height: finalFallbackSize,
-        borderRadius: isModal ? 18 : 14,
-        background: "linear-gradient(135deg, #F5A623, #FFD17C)",
-        display: "grid", placeItems: "center",
-        fontSize: finalFontSize, fontWeight: 900, color: "#fff",
-        boxShadow: isModal ? "0 4px 24px rgba(245,166,35,0.25)" : "none"
-      }}>
-        {firstLetter}
+    <div
+      className="stea-website-card-skeleton"
+      aria-hidden="true"
+      style={{
+        animationDelay: reducedMotion ? "0ms" : `${index * 30}ms`,
+      }}
+    >
+      {/* Top row: badge + star placeholder */}
+      <div className="stea-skel-top-row">
+        <div className="stea-skel-badge" />
+        <div className="stea-skel-star" />
+      </div>
+      {/* Center: icon + title lines */}
+      <div className="stea-skel-center">
+        <div className="stea-skel-icon" />
+        <div className="stea-skel-title-wrap">
+          <div className="stea-skel-title-line" style={{ width: "80%" }} />
+          <div className="stea-skel-title-line" style={{ width: "55%" }} />
+        </div>
+      </div>
+      {/* Bottom: domain text */}
+      <div className="stea-skel-bottom-row">
+        <div className="stea-skel-domain-line" />
       </div>
     </div>
   );
@@ -130,10 +54,11 @@ function fmtViews(v) {
  * WebsiteSolutionCard — STEA Premium Compact Card
  *
  * Cinematic dark surface card with:
- *  - Subtle border, subtle hover glow
- *  - Top row: Domain + Star Favorite button
+ *  - Subtle border, premium hover lift + glow
+ *  - Top row: PAID/FREE pill badge + Star Favorite button
  *  - Middle row: WebsiteIcon + Title
- *  - Bottom row: Open arrow ↗
+ *  - Bottom row: ↗ domain
+ *  - Scroll reveal on first viewport entry
  *  - Consistent across category views, compact listings, and discovery stream
  */
 export function WebsiteSolutionCard({
@@ -145,11 +70,19 @@ export function WebsiteSolutionCard({
   isFavorite,
   onToggleFavorite,
   rank,
+  index = 0,
+  loading = false,
 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const cardRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-  if (!site) return null;
+  // ── Skeleton loading state ──
+  if (loading || !site) {
+    return <WebsiteCardSkeleton index={index} />;
+  }
 
   const title = site.name || site.title || "Untitled Website";
   let domain = site.domain || extractHostname(site.url || site.websiteUrl || site.link || "") || "";
@@ -186,8 +119,45 @@ export function WebsiteSolutionCard({
     }
   };
 
+  // ── Scroll reveal via IntersectionObserver ──
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (mq?.matches) {
+      setReducedMotion(true);
+      setIsVisible(true);
+      return undefined;
+    }
+
+    const el = cardRef.current;
+    if (!el) return undefined;
+
+    // If already above the fold, reveal immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      setIsVisible(true);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const staggerDelay = reducedMotion ? 0 : index * 30;
+
   return (
     <div
+      ref={cardRef}
       onClick={openDetails}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -197,8 +167,13 @@ export function WebsiteSolutionCard({
       }}
       role="button"
       tabIndex={0}
-      className="stea-website-compact-card stea-btn"
+      className={`stea-website-compact-card stea-btn ${
+        isVisible ? "is-revealed" : "is-hidden-before-reveal"
+      }`}
       title={title}
+      style={{
+        transitionDelay: reducedMotion ? "0ms" : `${staggerDelay}ms`,
+      }}
     >
       {/* Top Row: PAID (purple) or FREE (green) pill badge + Star Favorite Button */}
       <div className="stea-card-top-row">

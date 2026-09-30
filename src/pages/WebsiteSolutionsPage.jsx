@@ -162,22 +162,106 @@ function Skel() {
   );
 }
 
-function WebsiteEmptyState({ stateType, categoryLabel, categoryIcon, query, onClear, onSuggest, onRetry }) {
+function WebsiteEmptyState({ stateType, categoryLabel, categoryIcon, query, onClear, onSuggest, onRetry, onBrowseAll }) {
   const { t } = useTranslation();
+
+  // ── Premium empty state card wrapper ──
+  const cardStyle = {
+    background: "linear-gradient(180deg, rgba(20,22,31,0.9) 0%, rgba(12,14,24,0.95) 100%)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 20,
+    padding: "48px 24px",
+    textAlign: "center",
+    maxWidth: 460,
+    margin: "0 auto",
+  };
+
+  const iconWrapStyle = {
+    width: 72,
+    height: 72,
+    borderRadius: 20,
+    background: "linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(245,166,35,0.05) 100%)",
+    border: "1px solid rgba(245,166,35,0.25)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "0 auto 20px",
+    fontSize: 32,
+  };
+
+  const headingStyle = {
+    margin: "0 0 8px",
+    fontFamily: "'Bricolage Grotesque', 'Instrument Sans', system-ui, sans-serif",
+    fontSize: 20,
+    fontWeight: 850,
+    letterSpacing: "-0.01em",
+    color: "#F3F4F6",
+  };
+
+  const subtitleStyle = {
+    margin: "0 0 24px",
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: 1.5,
+    color: "rgba(255,255,255,0.6)",
+  };
+
+  const goldButtonStyle = {
+    appearance: "none",
+    border: 0,
+    padding: "10px 20px",
+    borderRadius: 12,
+    background: "linear-gradient(135deg, #F5A623, #FFD17C)",
+    color: "#0A0B10",
+    fontWeight: 800,
+    fontSize: 13,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "filter 140ms ease, transform 140ms ease",
+    boxShadow: "0 4px 14px rgba(245,166,35,0.3)",
+  };
+
+  const ghostButtonStyle = {
+    appearance: "none",
+    padding: "10px 20px",
+    borderRadius: 12,
+    background: "transparent",
+    border: "1px solid rgba(255,255,255,0.12)",
+    color: "#F3F4F6",
+    fontWeight: 700,
+    fontSize: 13,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    transition: "border-color 140ms ease, background 140ms ease",
+  };
+
+  const buttonRowStyle = {
+    display: "flex",
+    gap: 10,
+    justifyContent: "center",
+    flexWrap: "wrap",
+  };
+
   if (stateType === "error") {
-    const isOffline = !navigator.onLine;
+    const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
     return (
-      <div className="empty-state-card">
-        <div className="empty-state-icon">⚠️</div>
-        <h3 className="empty-state-title">{isOffline ? t("error.offlineTitle") : t("error.connectionProblem")}</h3>
-        <p className="empty-state-text">
-          {isOffline 
+      <div style={cardStyle}>
+        <div style={iconWrapStyle}>⚠️</div>
+        <h3 style={headingStyle}>
+          {isOffline ? t("error.offlineTitle") : t("error.connectionProblem")}
+        </h3>
+        <p style={subtitleStyle}>
+          {isOffline
             ? t("error.offlineMessage")
             : t("error.connectionProblemMessage")}
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginTop: 22 }}>
-          <button className="empty-state-button" onClick={onRetry}>{t("buttons.retry")}</button>
-          {!isOffline && <button className="empty-state-button" style={{ background: "#f1f5f9", color: "#0f172a" }} onClick={onSuggest}>{t("buttons.suggestWebsite")}</button>}
+        <div style={buttonRowStyle}>
+          <button style={goldButtonStyle} onClick={onRetry}>{t("buttons.retry")}</button>
+          {!isOffline && (
+            <button style={ghostButtonStyle} onClick={onSuggest}>
+              {t("buttons.suggestWebsite")}
+            </button>
+          )}
         </div>
       </div>
     );
@@ -185,25 +269,42 @@ function WebsiteEmptyState({ stateType, categoryLabel, categoryIcon, query, onCl
 
   if (stateType === "search") {
     return (
-      <div className="empty-state-card">
-        <div className="empty-state-icon">🔍</div>
-        <h3 className="empty-state-title">{t("search.noResultsTitle")}</h3>
-        <p className="empty-state-text">{t("search.noResultsText", { query, category: categoryLabel })}</p>
-        <button className="empty-state-button" onClick={onClear}>{t("buttons.clearSearch")}</button>
+      <div style={cardStyle}>
+        <div style={iconWrapStyle}>🔍</div>
+        <h3 style={headingStyle}>
+          No results for &ldquo;{query}&rdquo;
+        </h3>
+        <p style={subtitleStyle}>
+          Try a different search or browse by category.
+        </p>
+        <div style={buttonRowStyle}>
+          <button style={goldButtonStyle} onClick={onClear}>Clear Search</button>
+          {onBrowseAll && (
+            <button style={ghostButtonStyle} onClick={onBrowseAll}>Browse All</button>
+          )}
+        </div>
       </div>
     );
   }
 
   // True empty category
   return (
-    <div className="empty-state-card">
-      <div className="empty-state-icon">{categoryIcon || "🌐"}</div>
-      <h3 className="empty-state-title">{t("category.emptyTitle")}</h3>
-      <p className="empty-state-text">
-        {t("category.emptyText", { category: categoryLabel })}<br/>
-        <span style={{ fontSize: 13, marginTop: 8, display: "block" }}>{t("category.emptyHint")}</span>
+    <div style={cardStyle}>
+      <div style={iconWrapStyle}>{categoryIcon || "🌐"}</div>
+      <h3 style={headingStyle}>Nothing here yet</h3>
+      <p style={subtitleStyle}>
+        This category is coming soon. Try another or suggest a site.
       </p>
-      <button className="empty-state-button" onClick={onSuggest}>{t("buttons.suggestWebsite")}</button>
+      <div style={buttonRowStyle}>
+        <button style={goldButtonStyle} onClick={onBrowseAll || onSuggest}>
+          {onBrowseAll ? "Browse All" : "Suggest a Site"}
+        </button>
+        {onBrowseAll && onSuggest && (
+          <button style={ghostButtonStyle} onClick={onSuggest}>
+            Suggest a Site
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -1125,13 +1226,48 @@ export default function WebsiteSolutionsPage() {
                       )}
 
                       {heroSearched.length === 0 ? (
-                        <div className="empty-state-card" role="status" style={{ background: TOKENS.panel, border: `1px solid ${TOKENS.border}`, color: TOKENS.text, padding: "28px 16px", textAlign: "center", borderRadius: 12 }}>
-                          <div className="empty-state-icon" style={{ width: 44, height: 44, borderRadius: 999, background: TOKENS.goldSoft, color: TOKENS.gold, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 12 }}>🔍</div>
-                          <h3 className="empty-state-title" style={{ color: TOKENS.text, margin: "0 0 6px", fontSize: 16, fontWeight: 800 }}>No websites found for &ldquo;{searchQ}&rdquo;</h3>
-                          <p className="empty-state-text" style={{ color: TOKENS.text2, fontSize: 13, maxWidth: 360, margin: "0 auto 16px" }}>
-                            Try searching with different keywords, check your spelling, or explore categories below.
+                        <div style={{
+                          background: "linear-gradient(180deg, rgba(20,22,31,0.9) 0%, rgba(12,14,24,0.95) 100%)",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                          borderRadius: 16,
+                          padding: "36px 20px",
+                          textAlign: "center",
+                          maxWidth: 420,
+                          margin: "0 auto",
+                        }}>
+                          <div style={{
+                            width: 56, height: 56, borderRadius: 16,
+                            background: "linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(245,166,35,0.05) 100%)",
+                            border: "1px solid rgba(245,166,35,0.25)",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            margin: "0 auto 14px", fontSize: 24,
+                          }}>🔍</div>
+                          <h3 style={{
+                            margin: "0 0 6px",
+                            fontFamily: "'Bricolage Grotesque', system-ui, sans-serif",
+                            fontSize: 17, fontWeight: 850, letterSpacing: "-0.01em",
+                            color: "#F3F4F6",
+                          }}>No results for &ldquo;{searchQ}&rdquo;</h3>
+                          <p style={{
+                            margin: "0 0 16px", fontSize: 13, fontWeight: 500,
+                            lineHeight: 1.5, color: "rgba(255,255,255,0.6)",
+                          }}>
+                            Try a different search or browse by category.
                           </p>
-                          <button type="button" className="empty-state-button" onClick={() => setSearchQ("")} style={{ appearance: "none", border: 0, padding: "8px 16px", borderRadius: 8, background: TOKENS.goldSoft, color: TOKENS.goldHi, fontWeight: 700, fontSize: 12, cursor: "pointer" }}>Clear Search</button>
+                          <button
+                            type="button"
+                            onClick={() => setSearchQ("")}
+                            style={{
+                              appearance: "none", border: 0,
+                              padding: "9px 18px", borderRadius: 10,
+                              background: "linear-gradient(135deg, #F5A623, #FFD17C)",
+                              color: "#0A0B10", fontWeight: 800, fontSize: 12.5,
+                              cursor: "pointer", fontFamily: "inherit",
+                              boxShadow: "0 4px 14px rgba(245,166,35,0.3)",
+                            }}
+                          >
+                            Clear Search
+                          </button>
                         </div>
                       ) : (
                         <SitesCompactList

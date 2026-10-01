@@ -1,15 +1,31 @@
+# HTML — allow edge caching with revalidation
 /index.html
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=86400
   X-Content-Type-Options: nosniff
 
+# Service worker — never cache
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 
+# Hashed assets — cache forever
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Fonts — cache forever
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Snapshot (JSON data) — cache for 1 hour
+/assets/sitesCatalogSnapshot*
+  Cache-Control: public, max-age=3600
+
+# Sitemaps and manifests
+/*.xml
+  Cache-Control: public, max-age=3600
+
+/*.webmanifest
+  Cache-Control: public, max-age=3600
+
+# Everything else — short cache
 /*
-  Cache-Control: no-cache, must-revalidate
+  Cache-Control: public, max-age=60, must-revalidate

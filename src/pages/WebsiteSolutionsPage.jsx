@@ -64,7 +64,7 @@ import { Code2, ArrowLeft, ChevronRight, Sparkles } from "lucide-react";
 
 const G      = "#F5A623";
 const ACCENT = "#0ea5e9";
-const BG     = "#06080f";
+const BG     = "var(--stea-page)";
 const BORDER = "rgba(255,255,255,.08)";
 const WEBSITES_OG_IMAGE = "https://stea.africa/seo/stea-websites-og-v2.png";
 const WEBSITES_SEO_TITLE = "STEA Websites — Discover Useful Websites by Category";
@@ -457,7 +457,7 @@ function SitesV2Shell({ seo, user, isReady, progress = 0, onSignIn, children, fi
     <div
       className={`sites-v2-page${fixedShell ? " is-fixed-shell" : ""}`}
       style={{
-        background: "#06080F",
+        background: "var(--stea-page)",
         color: TOKENS.text,
         fontFamily: "'Instrument Sans', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
         position: "relative",

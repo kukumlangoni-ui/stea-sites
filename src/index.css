@@ -34,8 +34,8 @@ body, html, #root {
 html.stea-websites-route,
 body.stea-websites-route,
 body.stea-websites-route #root {
-  background: #06080F;
-  color: #FFFFFF;
+  background: var(--stea-page);
+  color: var(--stea-text);
   overflow: visible !important;
 }
 :root {

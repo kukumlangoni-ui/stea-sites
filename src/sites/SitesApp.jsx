@@ -164,7 +164,7 @@ export default function SitesApp() {
               <Route
                 path="*"
                 element={
-                  <Suspense fallback={<div style={{ minHeight: "80vh", background: "#06080f" }} />}>
+                  <Suspense fallback={<div style={{ minHeight: "80vh", background: "var(--stea-page)" }} />}>
                     <SitesNotFoundPage />
                   </Suspense>
                 }
@@ -183,7 +183,7 @@ export default function SitesApp() {
                 color: #ffffff;
               }
               body {
-                background-color: #06080f;
+                background-color: var(--stea-page);
                 background-image:
                   radial-gradient(ellipse at 50% 0%, rgba(245, 166, 35, 0.035) 0%, transparent 60%),
                   radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.02) 0%, transparent 40%),

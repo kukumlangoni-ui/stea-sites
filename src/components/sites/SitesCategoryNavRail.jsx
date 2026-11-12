@@ -196,12 +196,12 @@ function SitesCategoryNavRail({
           position: sticky;
           top: 56px;
           z-index: var(--stea-z-rail, 40);
-          background: rgba(6, 8, 15, 0.94);
+          background: color-mix(in srgb, var(--stea-page) 88%, transparent);
           backdrop-filter: saturate(180%) blur(20px);
           -webkit-backdrop-filter: saturate(180%) blur(20px);
           margin: 0 calc(-1 * clamp(12px, 2.4vw, 28px)) 16px;
           padding: 10px clamp(12px, 2.4vw, 28px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          border-bottom: 1px solid var(--stea-border);
           box-sizing: border-box;
           max-width: 100vw;
           overflow: hidden;

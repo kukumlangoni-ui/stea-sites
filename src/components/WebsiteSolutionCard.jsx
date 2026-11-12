@@ -15,34 +15,34 @@ export function WebsiteCardSkeleton({ index = 0 }) {
   return (
     <div
       aria-hidden="true"
-      className="flex h-full min-h-[196px] flex-col rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#11151F]"
+      className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#151515]"
       style={{ animationDelay: reducedMotion ? "0ms" : `${index * 30}ms` }}
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="h-4 w-12 animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
-        <div className="h-5 w-5 animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
+        <div className="h-4 w-14 animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
+        <div className="h-4 w-4 animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
       </div>
-      <div className="mt-5 h-12 w-12 animate-pulse rounded-xl bg-slate-100 dark:bg-white/5" />
-      <div className="mt-auto space-y-2 pt-6">
-        <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200 dark:bg-white/10" />
-        <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
+      <div className="mt-4 flex items-center gap-3">
+        <div className="h-11 w-11 shrink-0 animate-pulse rounded-xl bg-slate-100 dark:bg-white/5" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200 dark:bg-white/10" />
+          <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
+        </div>
+      </div>
+      <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/5">
+        <div className="h-3 w-16 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
+        <div className="h-3 w-8 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
       </div>
     </div>
   );
 }
 
-function fmtViews(v) {
-  if (!v) return "0";
-  if (v >= 1000000) return (v / 1000000).toFixed(1) + "M";
-  if (v >= 1000) return (v / 1000).toFixed(1) + "K";
-  return String(v);
-}
-
 /**
- * WebsiteSolutionCard — STEA Premium Card v2 (Phase 2)
+ * WebsiteSolutionCard — final premium card.
  *
- * Light: white card on #F8F9FA page · Dark: #11151F card on #0B0F19 page
- * Uniform height, tactile hover lift, theme-aware via Tailwind `dark:` + tokens.
+ * Blends the airy Option 5 layout (logo + text side by side) with Option 4's
+ * elevated accents: hairline border, inner highlight, hairline footer divider
+ * and a status dot. Light and dark both supported.
  */
 export function WebsiteSolutionCard({
   site,
@@ -116,6 +116,14 @@ export function WebsiteSolutionCard({
       site.isOfficial
   );
 
+  // Paid → "Premium" badge. Falls back to the legacy trust signal when the
+  // record has no explicit price field.
+  const isPremium = Boolean(
+    site.isPaid ?? site.paid ?? site.isPremium ?? site.premium ?? isTrusted
+  );
+
+  const footerTag = String(site.quality || site.category || site.tag || "").trim();
+
   const openDetails = () => {
     if (onDetails || onSelect) {
       (onDetails || onSelect)(site);
@@ -147,26 +155,26 @@ export function WebsiteSolutionCard({
       title={title}
       style={{ transitionDelay: `${staggerDelay}ms` }}
       className={[
-        /* shell */
-        "stea-card-v2 group relative flex h-full min-h-[150px] w-full min-w-0 cursor-pointer select-none flex-col md:min-h-[196px]",
-        /* iOS secondary system background: #FFF / #1C1C1E */
-        "rounded-2xl border border-slate-200/70 bg-white p-3 shadow-sm md:p-4",
-        "dark:border-white/5 dark:bg-[#151515]",
-        "transition-all duration-200 ease-out",
-        /* hover — subtle scale + soft depth */
-        "hover:scale-[1.02] hover:shadow-lg hover:shadow-slate-200/60",
-        "dark:hover:shadow-black/60",
+        "stea-card-v2 group relative flex h-full w-full min-w-0 cursor-pointer select-none flex-col",
+        /* canvas: white / #151515 with an inner top highlight */
+        "rounded-2xl border border-slate-200 bg-white p-4",
+        "dark:border-white/10 dark:bg-[#151515]",
+        "shadow-[inset_0_1px_0_rgba(15,23,42,0.03)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]",
+        "transition-all duration-300 ease-out",
+        /* hover — lift + deepen */
+        "hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/60",
+        "dark:hover:border-white/20 dark:hover:shadow-black/50",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-        "active:scale-[0.98]",
+        "active:translate-y-0 active:scale-[0.99]",
         /* reveal */
         isVisible ? "opacity-100" : "pointer-events-none opacity-0",
       ].join(" ")}
     >
-      {/* ── Top row: badge (left) + favorite (right) ── */}
+      {/* ── Top row: badge + star ── */}
       <div className="flex items-start justify-between gap-2">
-        {isTrusted ? (
+        {isPremium ? (
           <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:border-[#F5A623]/20 dark:bg-[#F5A623]/10 dark:text-[#F5A623]">
-            Paid
+            Premium
           </span>
         ) : (
           <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -191,34 +199,57 @@ export function WebsiteSolutionCard({
             className={
               isFavorite
                 ? "text-amber-500"
-                : "text-slate-300 dark:text-zinc-600"
+                : "text-slate-300 transition-colors duration-200 hover:text-amber-500 dark:text-zinc-600"
             }
           />
         </button>
       </div>
 
-      {/* ── Logo ── */}
-      <div className="mb-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 transition-all duration-200 ease-out group-hover:scale-105 dark:bg-white/5">
-        <WebsiteIcon
-          website={site}
-          size={32}
-          style={{ background: "transparent", border: "0", boxShadow: "none" }}
-        />
+      {/* ── Middle row: logo + text, side by side ── */}
+      <div className="mt-4 flex min-w-0 items-center gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200/70 bg-slate-50 transition-transform duration-200 ease-out group-hover:scale-105 dark:border-white/5 dark:bg-[#0A0A0A]">
+          <WebsiteIcon
+            website={site}
+            size={28}
+            style={{ background: "transparent", border: "0", boxShadow: "none" }}
+          />
+        </div>
+
+        <div className="flex min-w-0 flex-col">
+          <h3 className="truncate text-[14px] font-semibold tracking-tight text-slate-900 dark:text-white">
+            {title}
+          </h3>
+          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[11px] text-slate-500 dark:text-zinc-400">
+            <ArrowUpRight
+              size={12}
+              aria-hidden="true"
+              className="shrink-0 text-slate-400 transition-colors duration-300 group-hover:text-amber-500 dark:text-zinc-500"
+            />
+            <span className="truncate">{domain || "Visit"}</span>
+          </p>
+        </div>
       </div>
 
-      {/* ── Text block, pinned to the bottom so every card aligns ── */}
-      <div className="mt-auto min-w-0">
-        <h3 className="mb-1 truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-white">
-          {title}
-        </h3>
-        <p className="flex min-w-0 items-center gap-1 text-[11px] text-slate-500 dark:text-zinc-400">
-          <ArrowUpRight
-            size={12}
-            aria-hidden="true"
-            className="shrink-0 text-slate-400 transition-colors duration-300 group-hover:text-amber-500 dark:text-zinc-500"
-          />
-          <span className="truncate">{domain || "Visit"}</span>
-        </p>
+      {/* ── Bottom row: status dot + tag ── */}
+      <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-white/5">
+        {isPremium ? (
+          <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-medium text-amber-600 dark:text-[#F5A623]">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-[#F5A623]" aria-hidden="true" />
+            Premium
+          </span>
+        ) : (
+          <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 dark:bg-emerald-400" aria-hidden="true" />
+            Free
+          </span>
+        )}
+
+        {footerTag ? (
+          <span className="truncate text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+            {footerTag}
+          </span>
+        ) : null}
+
         {rank ? <span className="sr-only">Rank {rank}</span> : null}
       </div>
     </div>

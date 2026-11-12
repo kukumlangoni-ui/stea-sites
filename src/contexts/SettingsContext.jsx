@@ -31,33 +31,21 @@ export function SettingsProvider({ children }) {
       console.warn("localStorage not available", e);
     }
     
-    const applyTheme = (t) => {
+    const systemIsLight = () =>
+      window.matchMedia?.('(prefers-color-scheme: light)').matches ?? false;
+
+    const applyTheme = (isLight) => {
       const root = document.documentElement;
-      if (t === 'light') {
-        root.classList.add('light-mode');
-      } else if (t === 'dark') {
-        root.classList.remove('light-mode');
-      } else {
-        // System
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-          root.classList.add('light-mode');
-        } else {
-          root.classList.remove('light-mode');
-        }
-      }
+      root.classList.toggle('light-mode', isLight);
+      root.classList.toggle('dark', !isLight);   // makes Tailwind `dark:` follow the app
+      root.style.colorScheme = isLight ? 'light' : 'dark';
     };
 
-    applyTheme(theme);
+    applyTheme(theme === 'light' || (theme === 'system' && systemIsLight()));
 
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-      const handleChange = (e) => {
-        if (e.matches) {
-          document.documentElement.classList.add('light-mode');
-        } else {
-          document.documentElement.classList.remove('light-mode');
-        }
-      };
+      const handleChange = (e) => applyTheme(e.matches);
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }

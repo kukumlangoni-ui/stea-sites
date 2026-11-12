@@ -565,21 +565,27 @@ function SitesV2Shell({ seo, user, isReady, progress = 0, onSignIn, children, fi
           font-variant-numeric: tabular-nums;
         }
         .sites-v2-page {
-          padding-top: 54px;
+          padding-top: 56px;
           overflow: visible;
         }
         .sites-v2-main {
           width: 100%;
-          max-width: ${TOKENS.contentMax}px;
+          max-width: 1280px;        /* max-w-7xl — stops the grid stretching on 4K */
           margin: 0 auto;
           box-sizing: border-box;
-          padding: 0 clamp(12px, 2.4vw, 28px) 48px;
+          padding: 0 16px 64px;     /* px-4 */
           overflow: visible;
+        }
+        @media (min-width: 640px) {
+          .sites-v2-main { padding: 0 24px 64px; }   /* sm:px-6 */
+        }
+        @media (min-width: 1024px) {
+          .sites-v2-main { padding: 0 40px 80px; }   /* lg:px-10 — extra air with the rail */
         }
         .sites-discovery-workspace {
           display: flex;
           align-items: flex-start;
-          gap: 32px;
+          gap: 40px;
           width: 100%;
           position: relative;
           z-index: var(--stea-z-content, 10);
@@ -1071,10 +1077,10 @@ export default function WebsiteSolutionsPage() {
   // Only the sidebar's internal list adjusts — never the whole page.
   useEffect(() => {
     if (!isHomepage || !activeNavCategory) return;
-    const rail = document.querySelector(".sites-nav-rail-inner");
+    const rail = document.querySelector("[data-nav-rail-inner]");
     if (!rail) return;
     const activeEl = rail.querySelector(
-      `.sites-nav-rail-item[data-cat-slug="${CSS.escape(activeNavCategory)}"]`
+      `[data-cat-slug="${CSS.escape(activeNavCategory)}"]`
     );
     if (activeEl) {
       activeEl.scrollIntoView({ block: "nearest", behavior: "smooth" });

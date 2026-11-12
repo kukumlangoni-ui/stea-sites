@@ -71,16 +71,21 @@ function SitesCategoryNavRail({
   return (
     <>
       {/* ─── DESKTOP LEFT NAVIGATION RAIL ─── */}
-      <aside className="sites-category-nav-rail" aria-label="Category navigation">
-        <div className="sites-nav-rail-inner">
-          <div className="sites-nav-rail-eyebrow">
-            <span>CATEGORIES</span>
+      <aside
+        aria-label="Category navigation"
+        className="sticky top-24 z-30 hidden w-[204px] shrink-0 self-start lg:block"
+      >
+        <div data-nav-rail-inner className="max-h-[calc(100vh-8rem)] overflow-y-auto pb-6 pr-2 [scrollbar-color:rgba(120,130,150,0.25)_transparent] [scrollbar-width:thin]">
+          <div className="mb-2 flex items-baseline justify-between gap-2 px-3 text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+            <span>Categories</span>
             {totalWebsitesCount > 0 && (
-              <span className="sites-nav-rail-total">{totalWebsitesCount} sites</span>
+              <span className="text-[10px] font-medium normal-case tracking-normal text-slate-400 dark:text-zinc-500">
+                {totalWebsitesCount} sites
+              </span>
             )}
           </div>
 
-          <nav className="sites-nav-rail-list" role="navigation">
+          <nav className="flex flex-col gap-1" role="navigation">
             {/* Individual Categories — every item maps to a real homepage section */}
             {items.map((item) => {
               const isActive = activeCategory === item.slug;
@@ -90,21 +95,30 @@ function SitesCategoryNavRail({
                   href={item.path}
                   onClick={(e) => handleCategoryClick(e, item)}
                   data-cat-slug={item.slug}
-                  className={`sites-nav-rail-item ${isActive ? "is-active" : ""}`}
                   aria-current={isActive ? "page" : undefined}
+                  className={[
+                    "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 no-underline",
+                    "text-[13.5px] tracking-tight",
+                    "transition-all duration-300 ease-in-out",
+                    isActive
+                      ? "bg-slate-100 font-medium text-slate-900 dark:bg-white/10 dark:text-white"
+                      : "text-slate-500 hover:bg-slate-50 dark:text-zinc-400 dark:hover:bg-white/5",
+                  ].join(" ")}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeCategoryRailPill"
-                      className="sites-nav-rail-active-bg"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  <span className="sites-nav-rail-name" title={item.label}>
+                  <span className="min-w-0 truncate pr-2" title={item.label}>
                     {item.label}
                   </span>
                   {item.count > 0 && (
-                    <span className="sites-nav-rail-count">{item.count}</span>
+                    <span
+                      className={[
+                        "shrink-0 text-[11.5px] font-semibold tabular-nums",
+                        isActive
+                          ? "text-slate-500 dark:text-zinc-300"
+                          : "text-slate-400 dark:text-zinc-500",
+                      ].join(" ")}
+                    >
+                      {item.count}
+                    </span>
                   )}
                 </a>
               );
@@ -163,103 +177,7 @@ function SitesCategoryNavRail({
       </div>
 
       <style>{`
-        /* ─── Desktop Rail Styles ─── */
-        .sites-category-nav-rail {
-          display: block;
-          width: 220px;
-          flex-shrink: 0;
-          position: sticky;
-          top: 76px;
-          height: calc(100vh - 90px);
-          max-height: calc(100vh - 90px);
-          z-index: var(--stea-z-rail, 30);
-          align-self: flex-start;
-        }
-
-        .sites-nav-rail-inner {
-          height: 100%;
-          max-height: 100%;
-          overflow-y: auto;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
-          padding-right: 8px;
-          padding-bottom: 24px;
-        }
-
-        .sites-nav-rail-inner::-webkit-scrollbar {
-          width: 4px;
-        }
-        .sites-nav-rail-inner::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.12);
-          border-radius: 4px;
-        }
-
-        .sites-nav-rail-eyebrow {
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-          gap: 8px;
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: ${TOKENS.text3};
-          padding: 0 10px 10px;
-          user-select: none;
-        }
-        .sites-nav-rail-total {
-          font-size: 10px;
-          font-weight: 600;
-          letter-spacing: 0;
-          text-transform: none;
-          color: ${TOKENS.text2};
-          opacity: 0.7;
-        }
-
-        .sites-nav-rail-list {
-          display: flex;
-          flex-direction: column;
-          gap: 3px;
-          position: relative;
-        }
-
-        .sites-nav-rail-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 8px 12px;
-          border-radius: 10px;
-          text-decoration: none;
-          color: #94A3B8;
-          font-size: 13.5px;
-          font-weight: 600;
-          letter-spacing: -0.01em;
-          transition: color 140ms ease;
-          border: 1px solid transparent;
-          user-select: none;
-          position: relative;
-          z-index: 1;
-        }
-
-        .sites-nav-rail-item:hover {
-          color: #FFFFFF;
-        }
-
-        .sites-nav-rail-active-bg {
-          position: absolute;
-          inset: 0;
-          border-radius: 10px;
-          background: rgba(245, 166, 35, 0.09);
-          border: 1px solid #F5A623;
-          box-shadow: 0 0 16px rgba(245, 166, 35, 0.15), inset 0 0 12px rgba(245, 166, 35, 0.04);
-          z-index: -1;
-          pointer-events: none;
-        }
-
-        .sites-nav-rail-item.is-active {
-          color: #FFFFFF;
-          font-weight: 800;
-        }
+        /* ─── Desktop rail is fully Tailwind-driven — no local rules ─── */
 
         .sites-mobile-pill-active-bg {
           position: absolute;
@@ -272,33 +190,11 @@ function SitesCategoryNavRail({
           pointer-events: none;
         }
 
-        .sites-nav-rail-name {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          min-width: 0;
-          padding-right: 8px;
-        }
-
-        .sites-nav-rail-count {
-          font-size: 11.5px;
-          font-weight: 700;
-          color: ${TOKENS.text3};
-          font-variant-numeric: tabular-nums;
-          flex-shrink: 0;
-          transition: color 140ms ease;
-        }
-
-        .sites-nav-rail-item:hover .sites-nav-rail-count,
-        .sites-nav-rail-item.is-active .sites-nav-rail-count {
-          color: ${TOKENS.goldHi};
-        }
-
         /* ─── Mobile Horizontal Nav ─── */
         .sites-category-mobile-nav {
           display: none;
           position: sticky;
-          top: 54px;
+          top: 56px;
           z-index: var(--stea-z-rail, 40);
           background: rgba(6, 8, 15, 0.94);
           backdrop-filter: saturate(180%) blur(20px);

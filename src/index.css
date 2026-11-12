@@ -1,8 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
-/* Tailwind v4 — utilities only, no preflight color reset */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@700;800;900&display=swap');
+/* Tailwind v4 — theme + utilities, still NO preflight (the app ships its own reset) */
+@import "tailwindcss/theme";
 @import "tailwindcss/utilities";
 @import "./responsive.css";
 @import "./styles/stea-sites-cards.css";
+
+/* Class-based dark mode driven by SettingsContext (html.dark / html.light-mode) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --color-stea-gold: #F5A623;
+  --color-stea-gold-hi: #FFB536;
+
+  --radius-card: 1rem;
+  --radius-card-lg: 1.5rem;
+}
 
 /* Reset */
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -363,11 +378,7 @@ body, html, #root {
   border-radius: var(--r-sm);
 }
 
-/* ── Light mode (inverted) ───────────────────────────── */
-html.light-mode { filter: invert(1) hue-rotate(180deg); background-color: #fbfbfe; }
-html.light-mode img, html.light-mode video, html.light-mode iframe, html.light-mode .no-invert {
-  filter: invert(1) hue-rotate(180deg);
-}
+/* ── Light mode: real tokens, no invert hack (see THEME CONTRACT at EOF) ── */
 
 /* ── Premium glassmorphism nav ───────────────────────── */
 .nav-glass {
@@ -2817,58 +2828,136 @@ body {
 }
 
 /* ==========================================================================
-   STEA THEME VARIABLES (Dark & Light)
+   STEA THEME CONTRACT — v2 · Phase 1
+   Dark = default (html.dark)     Light = html.light-mode
+   Rule: no component may hardcode a surface/text hex. Read from these.
    ========================================================================== */
-:root {
-  --stea-page: #0B0918;
-  --stea-surface: #13102A;
-  --stea-panel: #0E121E;
-  --stea-panel2: #141A29;
-  --stea-border: rgba(255, 255, 255, 0.08);
-  --stea-border-hi: rgba(255, 255, 255, 0.14);
-  --stea-text: #F7F8FA;
-  --stea-text2: #B4B0C8;
-  --stea-text3: #7A7590;
-  --stea-gold: #F5A623;
-  --stea-gold-hi: #FFB536;
+
+:root,
+.dark {
+  color-scheme: dark;
+
+  /* Surfaces — deep slate, never pure black */
+  --stea-page:      #0B0F19;
+  --stea-page-2:    #0E1420;
+  --stea-surface:   #11151F;
+  --stea-panel:     #151A26;
+  --stea-panel2:    #1B2130;
+
+  /* Lines */
+  --stea-border:    rgba(255, 255, 255, 0.08);
+  --stea-border-hi: rgba(255, 255, 255, 0.16);
+
+  /* Ink */
+  --stea-text:      #FFFFFF;
+  --stea-text2:     #A1A1AA;
+  --stea-text3:     #71717A;
+
+  /* Brand */
+  --stea-gold:      #F5A623;
+  --stea-gold-hi:   #FFB536;
   --stea-gold-soft: rgba(245, 166, 35, 0.14);
-  --stea-hover: rgba(255, 255, 255, 0.05);
-  --stea-danger: #E56565;
-  --stea-success: #56C28A;
+
+  /* Interaction */
+  --stea-hover:      rgba(255, 255, 255, 0.06);
+  --stea-danger:     #F87171;
+  --stea-success:    #34D399;
+
+  /* Chrome (header / rails) */
+  --stea-header-bg:     rgba(0, 0, 0, 0.50);
+  --stea-header-border: rgba(255, 255, 255, 0.10);
+
+  /* Hero surface */
+  --stea-hero-surface: #0E1420;
+  --stea-hero-glow:    rgba(245, 166, 35, 0.10);
+  --stea-hero-border:  rgba(255, 255, 255, 0.12);
+  --stea-hero-shadow:  0 24px 64px rgba(0, 0, 0, 0.55),
+                       inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* Elevation */
+  --stea-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --stea-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.40);
+  --stea-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55);
+
+  /* Legacy aliases — older CSS keeps working, now theme-aware */
+  --bg:           var(--stea-page);
+  --card:         var(--stea-surface);
+  --card-hover:   var(--stea-panel2);
+  --border:       var(--stea-border);
+  --border-hover: var(--stea-border-hi);
+  --gold:         var(--stea-gold);
+  --gold-2:       var(--stea-gold-hi);
+  --text-1:       var(--stea-text);
+  --text-2:       var(--stea-text2);
+  --text-3:       var(--stea-text2);
+  --text-4:       var(--stea-text3);
 }
 
-.stea-home-light {
-  --stea-page: #F7F9FC;
-  --stea-surface: #FFFFFF;
-  --stea-panel: #F1F4F8;
-  --stea-panel2: #E8EDF2;
-  --stea-border: rgba(0, 0, 0, 0.08);
-  --stea-border-hi: rgba(0, 0, 0, 0.12);
-  --stea-text: #0F172A;
-  --stea-text2: #475569;
-  --stea-text3: #64748B;
-  --stea-gold: #D4A017;
-  --stea-gold-hi: #F5A623;
-  --stea-gold-soft: rgba(212, 160, 23, 0.1);
-  --stea-hover: rgba(0, 0, 0, 0.04);
-  --stea-danger: #E53E3E;
-  --stea-success: #38A169;
+html.light-mode,
+.light-mode .stea-home-light {
+  color-scheme: light;
+
+  /* Soft warm off-white page, pure-white cards */
+  --stea-page:      #F8F9FA;
+  --stea-page-2:    #FFFFFF;
+  --stea-surface:   #FFFFFF;
+  --stea-panel:     #F1F5F9;
+  --stea-panel2:    #E8EDF3;
+
+  --stea-border:    rgba(15, 23, 42, 0.08);
+  --stea-border-hi: rgba(15, 23, 42, 0.16);
+
+  --stea-text:      #0F172A;
+  --stea-text2:     #64748B;
+  --stea-text3:     #94A3B8;
+
+  --stea-gold:      #D97706;
+  --stea-gold-hi:   #B45309;
+  --stea-gold-soft: rgba(217, 119, 6, 0.10);
+
+  --stea-hover:      rgba(15, 23, 42, 0.04);
+  --stea-danger:     #DC2626;
+  --stea-success:    #059669;
+
+  --stea-header-bg:     rgba(255, 255, 255, 0.75);
+  --stea-header-border: rgba(15, 23, 42, 0.06);
+
+  --stea-hero-surface: #FFFFFF;
+  --stea-hero-glow:    rgba(245, 166, 35, 0.05);
+  --stea-hero-border:  rgba(15, 23, 42, 0.08);
+  --stea-hero-shadow:  0 1px 2px rgba(15, 23, 42, 0.04),
+                       0 12px 32px rgba(15, 23, 42, 0.06);
+
+  --stea-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --stea-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --stea-shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.10);
 }
 
-.stea-home-dark, .dark {
-  --stea-page: #0B0918;
-  --stea-surface: #13102A;
-  --stea-panel: #0E121E;
-  --stea-panel2: #141A29;
-  --stea-border: rgba(255, 255, 255, 0.08);
-  --stea-border-hi: rgba(255, 255, 255, 0.14);
-  --stea-text: #F7F8FA;
-  --stea-text2: #B4B0C8;
-  --stea-text3: #7A7590;
-  --stea-gold: #F5A623;
-  --stea-gold-hi: #FFB536;
-  --stea-gold-soft: rgba(245, 166, 35, 0.14);
-  --stea-hover: rgba(255, 255, 255, 0.05);
-  --stea-danger: #E56565;
-  --stea-success: #56C28A;
+/* ── Single source of truth for base surfaces ─────────── */
+html,
+body,
+#root {
+  background-color: var(--stea-page);
+  color: var(--stea-text);
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  transition: background-color 300ms ease-in-out, color 300ms ease-in-out;
 }
+
+/* Display type — titles get tight tracking */
+.t-hero,
+.t-h1,
+.t-h2,
+.t-h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+::selection {
+  background: var(--stea-gold-soft);
+  color: var(--stea-text);
+}
+
+/* Scrollbars follow theme instead of staying black */
+html.dark      { scrollbar-color: #2A2F3A transparent; }
+html.light-mode { scrollbar-color: #CBD5E1 transparent; }

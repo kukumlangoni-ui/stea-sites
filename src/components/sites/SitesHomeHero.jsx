@@ -288,15 +288,23 @@ export default function SitesHomeHero({
               </div>
             </div>
 
-            {/* Stat boxes */}
-            <div className="sites-hero-stats" aria-hidden="false">
-              <div className="sites-hero-stat">
-                <span className="sites-hero-stat-num">{websiteCount}</span>
-                <span className="sites-hero-stat-label">Sites</span>
+            {/* Stat boxes — modern metric tiles */}
+            <div className="sites-hero-stats flex items-center gap-2 sm:gap-3" aria-hidden="false">
+              <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-white/5">
+                <span className="text-xl font-bold leading-none tabular-nums text-slate-900 dark:text-white">
+                  {websiteCount}
+                </span>
+                <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                  Sites
+                </span>
               </div>
-              <div className="sites-hero-stat">
-                <span className="sites-hero-stat-num">{categoryCount}</span>
-                <span className="sites-hero-stat-label">Categories</span>
+              <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-white/5">
+                <span className="text-xl font-bold leading-none tabular-nums text-slate-900 dark:text-white">
+                  {categoryCount}
+                </span>
+                <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                  Categories
+                </span>
               </div>
             </div>
           </div>
@@ -304,8 +312,8 @@ export default function SitesHomeHero({
         {/* Search Input with Instant Dropdown */}
         <div className="sites-hero-search-wrap" ref={wrapRef}>
           <form className="sites-hero-search-form" onSubmit={submit} role="search" aria-label={t("search.websites", "Search websites")}>
-            <div className="sites-hero-search-field">
-              <Search size={17} className="sites-hero-search-icon" aria-hidden />
+            <div className="flex h-14 w-full items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 shadow-sm transition-all duration-300 ease-in-out focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/50 dark:border-white/10 dark:bg-[#11151F]">
+              <Search size={18} className="shrink-0 text-slate-400 dark:text-zinc-500" aria-hidden />
               <input
                 ref={inputRef}
                 type="search"
@@ -320,22 +328,25 @@ export default function SitesHomeHero({
                 aria-label={t("search.websites", "Search websites")}
                 aria-expanded={isOpen && hasSuggestions}
                 aria-autocomplete="list"
-                className="sites-hero-search-input"
+                className="h-full min-w-0 flex-1 border-none bg-transparent text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-zinc-500"
               />
               {!query && (
-                <kbd className="sites-search-kbd" title="Press / to focus search" aria-hidden="true">/</kbd>
+                <kbd className="hidden shrink-0 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 sm:block dark:border-white/10 dark:bg-white/5 dark:text-zinc-500" title="Press / to focus search" aria-hidden="true">/</kbd>
               )}
               {query && (
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="sites-hero-search-clear"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors duration-300 hover:text-slate-900 dark:text-zinc-500 dark:hover:text-white"
                   aria-label="Clear search"
                 >
-                  <X size={14} />
+                  <X size={15} />
                 </button>
               )}
-              <button type="submit" className="sites-hero-search-button">
+              <button
+                type="submit"
+                className="flex h-10 shrink-0 items-center gap-1.5 rounded-lg bg-amber-500 px-6 text-sm font-semibold text-black transition-colors duration-300 hover:bg-amber-400 active:scale-[0.98]"
+              >
                 <span className="sites-search-btn-text">{t("buttons.search", "Search")}</span>
                 <Search size={15} className="sites-search-btn-icon" aria-hidden />
               </button>
@@ -447,13 +458,16 @@ export default function SitesHomeHero({
           margin: 0 auto;
           padding: 40px clamp(20px, 3vw, 40px) 32px;
           border-radius: var(--hero-radius);
-          background: radial-gradient(ellipse at 50% -20%, rgba(124, 58, 237, 0.28) 0%, rgba(99, 102, 241, 0.14) 40%, rgba(14, 17, 30, 0.98) 100%), #0D0F1B;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 0 40px rgba(124, 58, 237, 0.18);
+          /* No purple. Warm brand glow on a solid token surface. */
+          background:
+            radial-gradient(120% 90% at 50% -30%, var(--stea-hero-glow) 0%, transparent 62%),
+            var(--stea-hero-surface);
+          border: 1px solid var(--stea-hero-border);
+          box-shadow: var(--stea-hero-shadow);
           overflow: visible;
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
-          transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+          transition: background 300ms ease-in-out,
+                      border-color 300ms ease-in-out,
+                      box-shadow 300ms ease-in-out;
         }
         .sites-hero-inner {
           position: relative;
@@ -484,41 +498,6 @@ export default function SitesHomeHero({
           text-align: center;
           gap: 0;
         }
-        .sites-hero-stats {
-          display: flex;
-          flex-direction: row;
-          gap: 8px;
-          flex-shrink: 0;
-        }
-        .sites-hero-stat {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-width: 64px;
-          padding: 6px 8px;
-          border-radius: 10px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.10);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-        }
-        .sites-hero-stat-num {
-          font-family: "'Bricolage Grotesque', system-ui, sans-serif";
-          font-size: 16px;
-          font-weight: 850;
-          line-height: 1;
-          color: #fff;
-          letter-spacing: -0.02em;
-        }
-        .sites-hero-stat-label {
-          margin-top: 4px;
-          font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: ${TOKENS.text3};
-        }
         .sites-hero-eyebrow {
           font-size: 11px;
           font-weight: 850;
@@ -530,11 +509,11 @@ export default function SitesHomeHero({
         }
         .sites-hero-title {
           margin: 0 0 16px;
-          font-family: "'Bricolage Grotesque', 'Instrument Sans', system-ui, -apple-system, sans-serif";
+          font-family: var(--font-display);
           font-size: clamp(24px, 2.4vw, 30px);
           line-height: 1.15;
-          letter-spacing: -0.02em;
-          font-weight: 850;
+          letter-spacing: -0.03em;
+          font-weight: 800;
           color: ${TOKENS.text};
         }
         .sites-hero-title-accent {
@@ -602,86 +581,7 @@ export default function SitesHomeHero({
         .sites-hero-search-form {
           width: 100%;
         }
-        .sites-hero-search-field {
-          position: relative;
-          display: flex;
-          align-items: center;
-          background: ${TOKENS.panel};
-          border: 1px solid ${TOKENS.borderHi};
-          border-radius: 12px;
-          padding: 3px 3px 3px 12px;
-          transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
-        }
-        .sites-hero-search-field:focus-within {
-          border-color: ${TOKENS.gold};
-          box-shadow: 0 0 0 3px ${TOKENS.goldSoft}, 0 12px 28px rgba(0,0,0,0.3);
-          background: ${TOKENS.panel2};
-        }
-        .sites-hero-search-icon {
-          color: ${TOKENS.text3};
-          flex-shrink: 0;
-          transition: color 160ms ease;
-        }
-        .sites-hero-search-field:focus-within .sites-hero-search-icon {
-          color: ${TOKENS.gold};
-        }
-        .sites-hero-search-input {
-          flex: 1;
-          border: 0;
-          background: transparent;
-          outline: none;
-          padding: 8px 8px;
-          color: ${TOKENS.text};
-          font: inherit;
-          font-size: 13.5px;
-          min-width: 0;
-          -webkit-appearance: none;
-          appearance: none;
-        }
-        .sites-hero-search-input::placeholder {
-          color: ${TOKENS.text3};
-        }
-        .sites-hero-search-clear {
-          appearance: none;
-          background: transparent;
-          border: 0;
-          color: ${TOKENS.text3};
-          cursor: pointer;
-          padding: 6px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 999px;
-          transition: color 140ms ease;
-        }
-        .sites-hero-search-clear:hover {
-          color: ${TOKENS.text};
-        }
-        .sites-hero-search-button {
-          appearance: none;
-          border: 0;
-          border-radius: 9px;
-          padding: 0 16px;
-          height: 34px;
-          background: #F5A623;
-          color: #000000;
-          font: inherit;
-          font-weight: 850;
-          font-size: 13px;
-          letter-spacing: 0.01em;
-          cursor: pointer;
-          transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
-          box-shadow: 0 4px 14px rgba(245,166,35,0.3);
-          flex-shrink: 0;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 5px;
-        }
-        .sites-hero-search-button:hover {
-          filter: brightness(1.08);
-          transform: translateY(-0.5px);
-        }
+        /* Search field is Tailwind-driven in the JSX — no local field rules */
         .sites-search-btn-icon {
           display: none;
         }
@@ -995,15 +895,6 @@ export default function SitesHomeHero({
             gap: 18px;
             margin-bottom: 16px;
           }
-          .sites-hero-stats {
-            flex-direction: row;
-            gap: 10px;
-          }
-          .sites-hero-stat {
-            min-width: 96px;
-            padding: 10px 14px;
-          }
-          .sites-hero-stat-num { font-size: 22px; }
         }
         @media (prefers-reduced-motion: reduce) {
           .sites-hero-orb { animation: none !important; }
@@ -1016,34 +907,6 @@ export default function SitesHomeHero({
           .sites-hero-title { font-size: 32px; margin-bottom: 12px; }
           .sites-hero-subtitle { font-size: 11.5px; }
           .sites-hero-subtitle-container .sites-hero-subtitle { margin-bottom: 20px; }
-          .sites-hero-search-field {
-            padding: 2px 2px 2px 10px;
-            border-radius: 10px;
-          }
-          .sites-hero-search-input {
-            font-size: 12.5px;
-            padding: 7px 6px;
-          }
-          .sites-hero-search-button {
-            height: 30px;
-            padding: 0 10px;
-            font-size: 11.5px;
-          }
-          .sites-search-btn-text {
-            display: inline-block;
-          }
-        }
-        @media (max-width: 360px) {
-          .sites-search-btn-text {
-            display: none;
-          }
-          .sites-search-btn-icon {
-            display: inline-block;
-          }
-          .sites-hero-search-button {
-            padding: 0 8px;
-            width: 30px;
-          }
         }
       `}</style>
     </section>

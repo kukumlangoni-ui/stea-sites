@@ -55,8 +55,8 @@ function SitesCategorySection({
         </Link>
       </div>
 
-      {/* Responsive Grid */}
-      <div className="sites-category-section-grid">
+      {/* Responsive Grid — Tailwind-driven, breathes at every breakpoint */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
         {list.map((site, idx) => {
           const id = String(site.id || site.slug || site.url);
           const isFav = favSet.has(id);
@@ -142,35 +142,7 @@ function SitesCategorySection({
           transform: translateX(2px);
         }
 
-        .sites-category-section-grid {
-          display: grid;
-          grid-template-columns: repeat(6, minmax(0, 1fr));
-          gap: 12px;
-        }
-        @media (max-width: 1400px) {
-          .sites-category-section-grid {
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 12px;
-          }
-        }
-        @media (max-width: 1100px) {
-          .sites-category-section-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 10px;
-          }
-        }
-        @media (max-width: 820px) {
-          .sites-category-section-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-          }
-        }
-        @media (max-width: 560px) {
-          .sites-category-section-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-          }
-        }
+        /* grid now lives in the JSX as Tailwind utilities — do not redefine here */
       `}</style>
     </section>
   );

@@ -318,14 +318,16 @@ function SitesCompactList({
         /* -------- Grid -------- */
         .sites-compact-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-          gap: 10px 12px;
+          grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+          gap: 16px 20px;
         }
         @media (max-width: 1099px) { .sites-compact-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-        @media (max-width: 768px) { .sites-compact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } }
+        @media (max-width: 768px) {
+          .sites-compact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        }
         /* Phones: a real 2-column grid. Forcing 3 columns here squeezed every
-           card to ~107px and truncated names and domains. */
-        @media (max-width: 560px) { .sites-compact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+           card and truncated names and domains. */
+        @media (max-width: 560px) { .sites-compact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
 
         /* Skeleton — match compact 100px card */
         .stea-card-skeleton {

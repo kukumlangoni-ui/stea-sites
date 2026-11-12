@@ -188,14 +188,15 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
           left: 0;
           right: 0;
           width: 100%;
-          height: 54px;
+          height: 56px;
           flex-shrink: 0;
           z-index: 1000;
-          background: rgba(6, 8, 15, 0.94);
-          backdrop-filter: saturate(170%) blur(16px);
-          -webkit-backdrop-filter: saturate(170%) blur(16px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          transition: border-color 200ms ease, background 200ms ease;
+          background: var(--stea-header-bg);
+          backdrop-filter: saturate(180%) blur(16px);
+          -webkit-backdrop-filter: saturate(180%) blur(16px);
+          border-bottom: 1px solid var(--stea-header-border);
+          transition: background-color 300ms ease-in-out,
+                      border-color 300ms ease-in-out;
           overflow: visible;
         }
 

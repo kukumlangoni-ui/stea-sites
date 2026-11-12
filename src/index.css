@@ -2848,8 +2848,8 @@ body {
   color-scheme: dark;
 
   /* Surfaces — deep slate, never pure black */
-  --stea-page:      #0B0F19;
-  --stea-page-2:    #0E1420;
+  --stea-page:      #000000;
+  --stea-page-2:    #0A0A0A;
   --stea-surface:   #11151F;
   --stea-panel:     #151A26;
   --stea-panel2:    #1B2130;

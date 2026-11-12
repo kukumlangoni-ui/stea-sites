@@ -183,9 +183,9 @@ function SitesCategoryNavRail({
           position: absolute;
           inset: 0;
           border-radius: 999px;
-          background: rgba(245, 166, 35, 0.16);
-          border: 1px solid rgba(245, 166, 35, 0.45);
-          box-shadow: 0 0 12px rgba(245, 166, 35, 0.15);
+          background: var(--stea-gold);
+          border: 1px solid transparent;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
           z-index: 0;
           pointer-events: none;
         }
@@ -210,7 +210,7 @@ function SitesCategoryNavRail({
         .sites-category-mobile-scroll {
           display: flex;
           align-items: center;
-          gap: 7px;
+          gap: 8px;
           overflow-x: auto;
           scrollbar-width: none;
           -webkit-overflow-scrolling: touch;
@@ -224,19 +224,19 @@ function SitesCategoryNavRail({
 
         .sites-category-mobile-pill {
           appearance: none;
-          border: 1px solid rgba(255, 255, 255, 0.09);
-          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid transparent;
+          background: color-mix(in srgb, var(--stea-text) 8%, transparent);
           color: ${TOKENS.text2};
-          font-size: 12.5px;
-          font-weight: 600;
-          padding: 6px 13px;
+          font-size: 13px;
+          font-weight: 500;
+          padding: 7px 14px;
           border-radius: 999px;
           white-space: nowrap;
           display: inline-flex;
           align-items: center;
           gap: 6px;
           cursor: pointer;
-          transition: all 140ms ease;
+          transition: background-color 200ms ease, color 200ms ease, transform 200ms ease;
           flex-shrink: 0;
           position: relative;
         }
@@ -244,15 +244,17 @@ function SitesCategoryNavRail({
         .sites-category-mobile-pill:active,
         .sites-category-mobile-pill:hover {
           color: ${TOKENS.text};
-          border-color: rgba(255, 255, 255, 0.2);
-          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sites-category-mobile-pill:active {
+          transform: scale(0.96);
         }
 
         .sites-category-mobile-pill.is-active {
-          background: rgba(245, 166, 35, 0.16);
-          border-color: rgba(245, 166, 35, 0.45);
-          color: #FFFFFF;
-          font-weight: 750;
+          background: var(--stea-gold);
+          border-color: transparent;
+          color: #000000;
+          font-weight: 600;
         }
 
         .sites-mobile-pill-count {
@@ -263,7 +265,7 @@ function SitesCategoryNavRail({
         }
 
         .sites-category-mobile-pill.is-active .sites-mobile-pill-count {
-          color: ${TOKENS.goldHi};
+          color: rgba(0, 0, 0, 0.55);
         }
 
         /* Responsive Breakpoint: Desktop rail on >1024px, Sleek horizontal bar on <=1024px */

@@ -192,8 +192,8 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
           flex-shrink: 0;
           z-index: 1000;
           background: var(--stea-header-bg);
-          backdrop-filter: saturate(180%) blur(16px);
-          -webkit-backdrop-filter: saturate(180%) blur(16px);
+          backdrop-filter: saturate(180%) blur(20px);
+          -webkit-backdrop-filter: saturate(180%) blur(20px);
           border-bottom: 1px solid var(--stea-header-border);
           transition: background-color 300ms ease-in-out,
                       border-color 300ms ease-in-out;
@@ -354,15 +354,10 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
           color: var(--stea-text);
         }
 
-        @media (max-width: 500px) {
-          .sites-header-install-text {
-            display: none;
-          }
+        /* Native-app feel: no Install CTA on phones, it belongs to desktop */
+        @media (max-width: 767px) {
           .sites-header-install-btn {
-            padding: 5px;
-            width: 28px;
-            height: 28px;
-            justify-content: center;
+            display: none !important;
           }
         }
       `}</style>

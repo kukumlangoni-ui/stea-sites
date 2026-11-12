@@ -2874,7 +2874,7 @@ body {
   --stea-success:    #34D399;
 
   /* Chrome (header / rails) */
-  --stea-header-bg:     rgba(0, 0, 0, 0.50);
+  --stea-header-bg:     rgba(0, 0, 0, 0.70);
   --stea-header-border: rgba(255, 255, 255, 0.10);
 
   /* Hero surface */

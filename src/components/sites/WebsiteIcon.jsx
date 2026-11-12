@@ -39,6 +39,29 @@ const PALETTES = [
   { bg: "#1F0815", color: "#F26FB2" },
 ];
 
+/* Neutral globe used when no real icon can be fetched — a letter tile reads
+   like a broken app, a globe reads like an intentional placeholder. */
+function GlobeGlyph({ size, color }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ display: "block", opacity: 0.85 }}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 2.5a14.5 14.5 0 0 0 0 19 14.5 14.5 0 0 0 0-19" />
+      <path d="M2.5 12h19" />
+    </svg>
+  );
+}
+
 function WebsiteIcon({
   website,
   name: explicitName,
@@ -202,7 +225,7 @@ function WebsiteIcon({
                 <path d={brandSvg.path} />
               </svg>
             ) : (
-              letter
+              <GlobeGlyph size={Math.max(16, Math.round(size * 0.55))} color={palette.color} />
             )}
           </span>
         )}
@@ -221,11 +244,8 @@ function WebsiteIcon({
               <path d={brandSvg.path} />
             </svg>
           ) : (
-            <span
-              className="stea-icon-letter"
-              style={{ color: palette.color, fontSize: Math.max(12, Math.round(size * 0.44)) }}
-            >
-              {letter}
+            <span className="stea-icon-letter" style={{ color: palette.color }}>
+              <GlobeGlyph size={Math.max(14, Math.round(size * 0.6))} color={palette.color} />
             </span>
           )}
         </span>

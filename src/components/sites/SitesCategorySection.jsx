@@ -56,7 +56,7 @@ function SitesCategorySection({
       </div>
 
       {/* Responsive Grid — Tailwind-driven, breathes at every breakpoint */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
         {list.map((site, idx) => {
           const id = String(site.id || site.slug || site.url);
           const isFav = favSet.has(id);

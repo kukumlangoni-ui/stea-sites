@@ -68,7 +68,7 @@ function persistHitCache() {
 const missCache = new Map(); // key → Set(src)
 
 /* ── eager budget: the first N mounted icons are requested immediately ── */
-const EAGER_BUDGET = 18;
+const EAGER_BUDGET = 48;
 /** How many catalog icons we warm in the background after the first screen. */
 const PRELOAD_BATCH = 60;
 let eagerSlotsUsed = 0;
@@ -109,8 +109,8 @@ function extractDomain(website) {
 function autoCandidates(domain) {
   if (!domain) return [];
   return [
-    { src: `https://icons.duckduckgo.com/ip3/${domain}.ico`, source: "duckduckgo" },
     { src: `https://www.google.com/s2/favicons?domain=${domain}&sz=128`, source: "google" },
+    { src: `https://icons.duckduckgo.com/ip3/${domain}.ico`, source: "duckduckgo" },
     { src: `https://${domain}/favicon.ico`, source: "direct" },
   ];
 }

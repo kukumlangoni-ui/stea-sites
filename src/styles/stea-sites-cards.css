@@ -302,8 +302,11 @@
 .stea-icon-img {
   position: relative;
   z-index: 2;
-  opacity: 0;
-  transform: scale(0.94);
+  /* Paint as soon as the bytes arrive. The shell's brand glyph sits underneath,
+     so we never gate visibility on a React state flip (a cached favicon could
+     load before the handler attached and stay invisible forever). */
+  opacity: 1;
+  transform: none;
   transition: opacity 160ms ease-out, transform 160ms ease-out;
 }
 

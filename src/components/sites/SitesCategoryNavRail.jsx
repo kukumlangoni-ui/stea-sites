@@ -196,7 +196,7 @@ function SitesCategoryNavRail({
           position: sticky;
           top: 56px;
           z-index: var(--stea-z-rail, 40);
-          background: color-mix(in srgb, var(--stea-page) 88%, transparent);
+          background: color-mix(in srgb, var(--stea-page) 96%, transparent);
           backdrop-filter: saturate(180%) blur(20px);
           -webkit-backdrop-filter: saturate(180%) blur(20px);
           margin: 0 calc(-1 * clamp(12px, 2.4vw, 28px)) 16px;

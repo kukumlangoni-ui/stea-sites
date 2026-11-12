@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Compass, LayoutGrid, Star, User } from "lucide-react";
 
 /**
@@ -17,8 +17,9 @@ const TABS = [
   { to: "/profile", label: "Profile", Icon: User, isActive: (p) => p.startsWith("/profile") },
 ];
 
-export default function SitesMobileTabBar() {
+export default function SitesMobileTabBar({ user, onProfileGate } = {}) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <nav
@@ -29,17 +30,30 @@ export default function SitesMobileTabBar() {
       <div className="flex h-14 items-center justify-around px-2 pt-2">
         {TABS.map(({ to, label, Icon, isActive }) => {
           const active = isActive(pathname);
+          const cls = `flex flex-col items-center gap-1 transition-colors duration-200 ${
+            active
+              ? "text-amber-500 dark:text-[#F5A623]"
+              : "text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
+          }`;
+
+          // Profile is gated: guests get the member sheet instead of a dead route
+          if (to === "/profile") {
+            return (
+              <button
+                key={to}
+                type="button"
+                onClick={() => (user ? navigate("/profile") : onProfileGate && onProfileGate())}
+                className={cls}
+                aria-label="Profile"
+              >
+                <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
+                <span className="text-[10px] font-medium">{label}</span>
+              </button>
+            );
+          }
+
           return (
-            <Link
-              key={to}
-              to={to}
-              aria-current={active ? "page" : undefined}
-              className={`flex flex-col items-center gap-1 transition-colors duration-200 ${
-                active
-                  ? "text-amber-500 dark:text-[#F5A623]"
-                  : "text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
-              }`}
-            >
+            <Link key={to} to={to} aria-current={active ? "page" : undefined} className={cls}>
               <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
               <span className="text-[10px] font-medium">{label}</span>
             </Link>

@@ -1327,7 +1327,7 @@ export default function WebsiteSolutionsPage() {
                 <SitesEcosystemFooter />
               </Suspense>
 
-              <SitesMobileTabBar />
+              <SitesMobileTabBar user={user} onProfileGate={gate.openGate} />
             </main>
           </div>
         </SitesV2Shell>

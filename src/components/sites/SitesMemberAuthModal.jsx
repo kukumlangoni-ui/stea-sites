@@ -229,11 +229,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
 
   if (!mounted) return null;
 
-  const fieldClass =
-    "h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 " +
-    "placeholder:text-slate-400 outline-none transition-all " +
-    "focus:border-amber-500 focus:ring-1 focus:ring-amber-500 " +
-    "dark:border-white/10 dark:bg-[#0A0A0A] dark:text-white dark:placeholder:text-zinc-600";
+  const fieldClass = "stea-auth-field";
 
   const labelClass = "mb-1.5 block text-xs font-bold text-slate-700 dark:text-zinc-300";
 
@@ -377,9 +373,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
               onClick={handleGoogle}
               disabled={loading}
               className={[
-                "mt-1 flex h-12 w-full items-center justify-center gap-3 rounded-xl border text-sm font-semibold transition-colors",
-                "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
-                "dark:border-white/10 dark:bg-transparent dark:text-white dark:hover:bg-white/5",
+                "stea-auth-google mt-1 flex h-12 w-full items-center justify-center gap-3 rounded-xl text-sm font-semibold transition-opacity",
                 loading ? "cursor-not-allowed opacity-60" : "",
               ].join(" ")}
             >
@@ -447,7 +441,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`${fieldClass} pr-11`}
+                  className={`${fieldClass} !pr-11`}
                   autoComplete={mode === "login" ? "current-password" : "new-password"}
                   onKeyDown={(e) => { if (e.key === "Enter" && mode === "login") handleEmailAuth(); }}
                 />

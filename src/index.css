@@ -2979,3 +2979,44 @@ html.stea-modal-open header[role="banner"] {
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
 }
+
+/* ── Auth modal form surfaces ──────────────────────────────────────────────
+   Unlayered on purpose: layered Tailwind utilities were losing to older
+   unlayered page rules, so these authoritative rules set the field look. */
+.stea-auth-field {
+  height: 48px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #0f172a;
+  padding: 0 16px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.stea-auth-field::placeholder { color: #94a3b8; }
+.stea-auth-field:focus {
+  border-color: #F5A623;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, .18);
+}
+html.dark .stea-auth-field,
+html.dark .dark .stea-auth-field {
+  border-color: rgba(255, 255, 255, .10);
+  background-color: #0A0A0A;
+  color: #ffffff;
+}
+html.dark .stea-auth-field::placeholder { color: #52525b; }
+
+.stea-auth-google {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+html.dark .stea-auth-google,
+html.dark .dark .stea-auth-google {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, .10);
+  color: #ffffff;
+}

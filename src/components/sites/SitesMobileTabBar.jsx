@@ -30,11 +30,11 @@ export default function SitesMobileTabBar({ user, onProfileGate } = {}) {
   const trackRef = useRef(null);
   const tabRefs = useRef([]);
 
-  const [autoplay, setAutoplay] = useState(true);
-  const [autoIndex, setAutoIndex] = useState(0);
-  const [dotX, setDotX] = useState(null);
-
   const routeIndex = Math.max(0, TABS.findIndex((tab) => tab.isActive(pathname)));
+
+  const [autoplay, setAutoplay] = useState(true);
+  const [autoIndex, setAutoIndex] = useState(routeIndex); // start on the real tab
+  const [dotX, setDotX] = useState(null);
   const index = autoplay ? autoIndex : routeIndex;
 
   /* ── place the dot exactly under the current tab ───────────────────────── */

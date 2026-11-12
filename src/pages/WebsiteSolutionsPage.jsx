@@ -43,6 +43,7 @@ import SitesRecentRail from "../components/sites/SitesRecentRail.jsx";
 import SitesCategoryNavRail from "../components/sites/SitesCategoryNavRail.jsx";
 import SitesCategoryTiles from "../components/sites/SitesCategoryTiles.jsx";
 import SitesCategorySection from "../components/sites/SitesCategorySection.jsx";
+import WebsiteSolutionCard from "../components/WebsiteSolutionCard.jsx";
 import SitesCompactList from "../components/sites/SitesCompactList.jsx";
 import FaviconTile from "../components/sites/FaviconTile.jsx";
 import SitesMemberGate, { useSitesMemberGate } from "../components/sites/SitesMemberGate.jsx";
@@ -791,7 +792,8 @@ export default function WebsiteSolutionsPage() {
   const sorted = useMemo(() => {
     let list = [...filtered];
     if (isFavoritesPage) {
-      list = list.filter(site => favoriteIds.includes(site.id));
+      const favSet = new Set((favoriteIds || []).map(String));
+      list = list.filter((site) => favSet.has(String(site.id ?? site.slug ?? site.url)));
     }
     return list.sort(sortCategoryWebsites);
   }, [filtered, isFavoritesPage, favoriteIds]);
@@ -923,10 +925,7 @@ export default function WebsiteSolutionsPage() {
   
   const onToggleFavorite = async (site) => {
     if (!site?.id) return;
-    if (!user) {
-      window.dispatchEvent(new CustomEvent("open-auth"));
-      return;
-    }
+    // Guests keep favorites in localStorage; the hook migrates them on sign-in.
     await toggleFavorite(site);
   };
 
@@ -1450,6 +1449,49 @@ export default function WebsiteSolutionsPage() {
             onBack={() => navigate("/websites/developers")}
             searchPlaceholder={`Search in ${categoryLabel}...`}
           />
+        ) : isFavoritesPage ? (
+          <div className="pb-2">
+            <div className="mb-3 flex items-end justify-between px-1">
+              <h1 className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">
+                My Favorites
+              </h1>
+              <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
+                {sorted.length} saved
+              </span>
+            </div>
+
+            {sorted.length === 0 ? (
+              <div className="mx-0 mt-2 rounded-2xl border border-slate-200 bg-white px-5 py-10 text-center dark:border-white/10 dark:bg-[#151515]">
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">No favorites yet</p>
+                <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+                  Tap the star on any site card to save it here.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate("/websites")}
+                  className="mt-4 rounded-xl bg-[#F5A623] px-4 py-2 text-xs font-semibold text-black transition-colors duration-200 hover:bg-amber-400"
+                >
+                  Browse sites
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+                {sorted.map((site, idx) => {
+                  const id = String(site.id || site.slug || site.url);
+                  return (
+                    <WebsiteSolutionCard
+                      key={id}
+                      site={site}
+                      isFavorite={favoriteIds.map(String).includes(String(site.id))}
+                      rank={idx + 1}
+                      onToggleFavorite={() => onToggleFavorite(site)}
+                      onDetails={() => openWebsiteDetail(site)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
         ) : (
           <SitesCompactList
             loading={shouldShowLoading}
@@ -1776,9 +1818,17 @@ export default function WebsiteSolutionsPage() {
 
         @media(min-width:720px){.sites-lang{display:inline-flex!important}}
 
+        /* the floating tab bar owns the bottom strip on phones */
+        @media (max-width: 1023px) {
+          .website-category-page-shell {
+            padding-bottom: 96px !important;
+          }
+        }
+
         @media(max-width:640px){
           .website-category-page-shell {
             padding: 18px 14px 32px !important;
+            padding-bottom: 96px !important;
           }
 
           .suggest-modal-backdrop {
@@ -1886,6 +1936,8 @@ export default function WebsiteSolutionsPage() {
         <Suspense fallback={null}>
           <SitesEcosystemFooter />
         </Suspense>
+
+        <SitesMobileTabBar user={user} onProfileGate={gate.openGate} />
       </SitesV2Shell>
       <SitesMemberGate
         open={gate.open}

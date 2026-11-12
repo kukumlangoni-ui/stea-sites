@@ -10,6 +10,7 @@
  *  - Dark glass STEA design
  */
 import { memo, useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import SteaLogo from "./SteaGlobeMark.jsx";
 
@@ -235,7 +236,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
     "shadow-[0_4px_14px_rgba(245,166,35,0.3)] transition-all hover:scale-[1.02] hover:bg-amber-400 " +
     "active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70";
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -496,6 +497,8 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
         )}
       </div>
     </div>
+    ,
+    document.body
   );
 }
 

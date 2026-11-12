@@ -8,6 +8,7 @@
  *  - Desktop: clean 4-column compact ecosystem pill cards
  *  - Mobile (320px - 430px): strict 2x2 grid, tight padding, no vertical giant cards
  */
+import SteaLogo from "./SteaGlobeMark.jsx";
 import { memo } from "react";
 import { ShieldCheck, Download } from "lucide-react";
 import SteaTerminalWidget from "./SteaTerminalWidget.jsx";
@@ -71,13 +72,7 @@ function SitesEcosystemFooter() {
         <div className="sites-footer-inner">
           <div className="sites-footer-brand-col">
             <a href="https://stea.africa" className="sites-footer-brand-link">
-              <img
-                src="/stea-www-globe.png"
-                alt="STEA logo"
-                className="sites-footer-logo"
-                width="26"
-                height="26"
-              />
+              <SteaLogo size={26} className="sites-footer-logo h-[26px] w-[26px] text-[#F5A623]" />
               <span className="sites-footer-brand-text">
                 STEA<span className="sites-footer-brand-accent">Sites</span>
               </span>

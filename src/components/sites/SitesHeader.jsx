@@ -1,3 +1,4 @@
+import SteaLogo from "./SteaGlobeMark.jsx";
 import { useState, memo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Download, Sun, Moon } from "lucide-react";
@@ -125,16 +126,7 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
         aria-label="STEA Home"
       >
         <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-[#111] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_6px_rgba(0,0,0,0.35)]">
-          <img
-            src={LOGO}
-            alt="STEA logo"
-            className="h-6 w-6 object-contain"
-            width="24"
-            height="24"
-            loading="eager"
-            decoding="sync"
-            fetchPriority="high"
-          />
+          <SteaLogo size={24} className="h-6 w-6 text-[#F5A623]" />
         </span>
         <span className="text-[18px] font-bold tracking-tight">STEA</span>
       </Link>

@@ -11,7 +11,7 @@
  */
 import { memo, useCallback, useEffect, useState } from "react";
 import { X, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
-import { TOKENS } from "./tokens.js";
+import SteaLogo from "./SteaGlobeMark.jsx";
 
 
 function SitesMemberAuthModal({ open = true, onClose, onUser }) {
@@ -222,189 +222,159 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
 
   if (!mounted) return null;
 
-  const inputStyle = {
-    width: "100%", height: 48, borderRadius: 10,
-    border: `1px solid ${TOKENS.gold}`, background: TOKENS.panel2,
-    color: TOKENS.text, padding: "0 14px",
-    outline: "none", fontFamily: "inherit", fontSize: 14,
-    boxSizing: "border-box", transition: "all 0.15s ease",
-  };
+  const fieldClass =
+    "h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 " +
+    "placeholder:text-slate-400 outline-none transition-all " +
+    "focus:border-amber-500 focus:ring-1 focus:ring-amber-500 " +
+    "dark:border-white/10 dark:bg-[#0A0A0A] dark:text-white dark:placeholder:text-zinc-600";
+
+  const labelClass = "mb-1.5 block text-xs font-bold text-slate-700 dark:text-zinc-300";
+
+  const primaryClass =
+    "flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-amber-500 text-sm font-bold text-black " +
+    "shadow-[0_4px_14px_rgba(245,166,35,0.3)] transition-all hover:scale-[1.02] hover:bg-amber-400 " +
+    "active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70";
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="sites-auth-title"
+      className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm dark:bg-black/80"
       style={{
-        position: "fixed", inset: 0, zIndex: 10001,
-        background: "rgba(5,7,11,.72)",
-        backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-        display: "grid", placeItems: "center", padding: 16,
         opacity: visible ? 1 : 0,
         transition: "opacity 180ms ease",
         pointerEvents: visible ? "auto" : "none",
       }}
       onMouseDown={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
-      <div style={{
-        position: "relative",
-        width: "min(420px, 100%)",
-        background: `radial-gradient(circle at 50% 0%, rgba(245,166,35,.08), transparent 50%), ${TOKENS.surface}`,
-        border: `1px solid ${TOKENS.border}`,
-        borderRadius: TOKENS.radiusLg,
-        padding: "32px 26px 24px",
-        boxShadow: "0 30px 80px rgba(0,0,0,.55)",
-        transform: visible ? "translateY(0)" : "translateY(10px)",
-        opacity: visible ? 1 : 0,
-        transition: "opacity 180ms ease, transform 180ms ease",
-        maxHeight: "calc(100vh - 32px)",
-        overflowY: "auto",
-      }}>
+      <div
+        className={[
+          "relative w-full max-w-sm overflow-y-auto rounded-3xl border border-slate-200 bg-white p-6",
+          "shadow-2xl dark:border-white/10 dark:bg-[#1C1C1E] sm:p-8",
+          "text-slate-900 dark:text-white",
+        ].join(" ")}
+        style={{
+          maxHeight: "90vh",
+          transform: visible ? "scale(1)" : "scale(0.96)",
+          opacity: visible ? 1 : 0,
+          transition: "opacity 180ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
         {/* Close */}
         <button
           type="button"
           onClick={handleClose}
-          style={{
-            position: "absolute", top: 14, right: 14,
-            width: 32, height: 32, borderRadius: "50%",
-            border: `1px solid ${TOKENS.border}`,
-            background: TOKENS.panel2, color: TOKENS.text2,
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
-          }}
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-white/10 dark:text-zinc-400 dark:hover:bg-white/20"
           aria-label="Close"
         >
           <X size={16} />
         </button>
 
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 22 }}>
-          <div style={{
-            width: 56, height: 56, margin: "0 auto 12px",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            filter: "drop-shadow(0 4px 18px rgba(245, 166, 35, 0.4))",
-          }}>
-            <img
-              src="/stea-www-globe.png"
-              alt="STEA logo"
-              style={{ width: "100%", height: "100%", objectFit: "contain", borderRadius: 12 }}
-              width="56"
-              height="56"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
+        {/* ── Header: clean SVG brand mark ── */}
+        <div className="mb-6 text-center">
+          <div
+            className={[
+              "mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[18px] text-[#F5A623]",
+              "border border-slate-200 bg-white shadow-sm",
+              "dark:border-white/10 dark:bg-[#151515] dark:shadow-lg dark:shadow-black/50",
+            ].join(" ")}
+          >
+            <SteaLogo size={34} />
           </div>
-          <h2 id="sites-auth-title" style={{
-            margin: "0 0 4px", fontSize: 22, fontWeight: 900,
-            color: TOKENS.text, letterSpacing: "-0.02em",
-          }}>
+          <h2
+            id="sites-auth-title"
+            className="m-0 text-[22px] font-bold tracking-tight text-slate-900 dark:text-white"
+          >
             {mode === "forgot" ? "Reset Password" : mode === "register" ? "Create Account" : "Welcome Back"}
           </h2>
-          <p style={{ margin: 0, fontSize: 13, color: TOKENS.text2, fontWeight: 600 }}>
-            STEA <span style={{ color: TOKENS.gold }}>Sites</span>
+          <p className="m-0 mt-1 text-[13px] font-semibold text-slate-500 dark:text-zinc-400">
+            STEA <span className="text-amber-500">Sites</span>
           </p>
         </div>
 
-        {/* Tabs */}
+        {/* ── iOS segmented control ── */}
         {mode !== "forgot" && (
-          <div style={{ display: "flex", borderBottom: `1px solid ${TOKENS.border}`, marginBottom: 18 }}>
-            {["login", "register"].map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => switchMode(m)}
-                style={{
-                  flex: 1, background: "none", border: "none",
-                  borderBottom: mode === m ? `2px solid ${TOKENS.gold}` : "2px solid transparent",
-                  color: mode === m ? TOKENS.gold : TOKENS.text3,
-                  fontWeight: 700, fontSize: 13.5, padding: "10px 0",
-                  cursor: "pointer", fontFamily: "inherit",
-                  transition: "all 0.15s",
-                }}
-              >
-                {m === "login" ? "Sign In" : "Register"}
-              </button>
-            ))}
+          <div className="mb-6 flex rounded-xl bg-slate-100 p-1 dark:bg-white/5">
+            {["login", "register"].map((m) => {
+              const active = mode === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => switchMode(m)}
+                  className={[
+                    "flex-1 rounded-lg py-2 text-center text-sm transition-all",
+                    active
+                      ? "bg-white font-bold text-slate-900 shadow-sm dark:bg-[#2C2C2E] dark:text-white"
+                      : "font-medium text-slate-500 dark:text-zinc-400",
+                  ].join(" ")}
+                  aria-pressed={active}
+                >
+                  {m === "login" ? "Sign In" : "Register"}
+                </button>
+              );
+            })}
           </div>
         )}
 
-        {/* Messages */}
+        {/* ── Messages ── */}
         {error && (
-          <div style={{
-            marginBottom: 14, padding: "10px 12px", borderRadius: 10,
-            border: "1px solid rgba(229,101,101,.3)",
-            background: "rgba(229,101,101,.1)",
-            color: TOKENS.danger, fontSize: 12.5, fontWeight: 600,
-            display: "flex", alignItems: "center", gap: 8,
-          }}>
-            <AlertCircle size={15} style={{ flexShrink: 0 }} />
+          <div className="mb-3.5 flex items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2.5 text-xs font-semibold text-rose-600 dark:text-rose-300">
+            <AlertCircle size={15} className="shrink-0" />
             <span>{error}</span>
           </div>
         )}
         {success && (
-          <div style={{
-            marginBottom: 14, padding: "10px 12px", borderRadius: 10,
-            border: "1px solid rgba(86,194,138,.3)",
-            background: "rgba(86,194,138,.1)",
-            color: TOKENS.success, fontSize: 12.5, fontWeight: 600,
-            display: "flex", alignItems: "center", gap: 8,
-          }}>
-            <CheckCircle size={15} style={{ flexShrink: 0 }} />
+          <div className="mb-3.5 flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2.5 text-xs font-semibold text-emerald-600 dark:text-emerald-300">
+            <CheckCircle size={15} className="shrink-0" />
             <span>{success}</span>
           </div>
         )}
 
         {mode === "forgot" ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="flex flex-col gap-3">
             <div>
-              <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 700, color: TOKENS.text }}>Email</label>
+              <label className={labelClass} htmlFor="stea-forgot-email">Email</label>
               <input
-                type="email" placeholder="your@email.com" value={email}
+                id="stea-forgot-email"
+                type="email"
+                placeholder="your@email.com"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={inputStyle}
-                onFocus={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.hover; }}
-                onBlur={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.panel2; }}
+                className={fieldClass}
+                autoComplete="email"
               />
             </div>
             <button
-              type="button" onClick={handleForgotPassword} disabled={loading}
-              style={{
-                width: "100%", height: 48, borderRadius: 12, border: 0,
-                background: `linear-gradient(180deg, ${TOKENS.goldHi}, ${TOKENS.gold})`,
-                color: "#111", fontFamily: "inherit", fontSize: 14, fontWeight: 900,
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
-              }}
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={loading}
+              className={`${primaryClass} mt-3`}
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </button>
             <button
-              type="button" onClick={() => switchMode("login")}
-              style={{
-                background: "none", border: "none", color: TOKENS.goldHi,
-                fontFamily: "inherit", fontSize: 13, fontWeight: 700,
-                cursor: "pointer", padding: "8px 0",
-              }}
+              type="button"
+              onClick={() => switchMode("login")}
+              className="mx-auto px-2 py-2 text-[13px] font-semibold text-amber-500 transition-colors hover:text-amber-600"
             >
               ← Back to Sign In
             </button>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="flex flex-col gap-3">
             {/* Google */}
             <button
-              type="button" onClick={handleGoogle} disabled={loading}
-              style={{
-                width: "100%", height: 48, borderRadius: 10,
-                border: `1px solid ${TOKENS.gold}`, background: TOKENS.panel2,
-                color: TOKENS.text, fontSize: 14, fontWeight: 700,
-                cursor: loading ? "not-allowed" : "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                gap: 10, fontFamily: "inherit",
-                opacity: loading ? 0.6 : 1,
-                transition: "background 0.15s",
-              }}
+              type="button"
+              onClick={handleGoogle}
+              disabled={loading}
+              className={[
+                "mt-1 flex h-12 w-full items-center justify-center gap-3 rounded-xl border text-sm font-semibold transition-colors",
+                "border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
+                "dark:border-white/10 dark:bg-transparent dark:text-white dark:hover:bg-white/5",
+                loading ? "cursor-not-allowed opacity-60" : "",
+              ].join(" ")}
             >
               {loading ? (
                 <span>Connecting to Google…</span>
@@ -412,65 +382,72 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                 <>
                   <img
                     src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                    width={18} height={18} alt=""
+                    width={18}
+                    height={18}
+                    alt=""
                   />
                   <span>Continue with Google</span>
                 </>
               )}
             </button>
 
-            <div style={{ display: "flex", alignItems: "center", margin: "2px 0" }}>
-              <div style={{ flex: 1, height: 1, background: TOKENS.border }} />
-              <span style={{ padding: "0 10px", fontSize: 12, color: TOKENS.text3 }}>or</span>
-              <div style={{ flex: 1, height: 1, background: TOKENS.border }} />
+            {/* Divider */}
+            <div className="my-2 flex items-center gap-4">
+              <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
+              <span className="text-xs font-medium text-slate-400 dark:text-zinc-500">or</span>
+              <div className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
             </div>
 
             {/* Name (register only) */}
             {mode === "register" && (
               <div>
-                <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 700, color: TOKENS.text }}>Full Name</label>
+                <label className={labelClass} htmlFor="stea-auth-name">Full Name</label>
                 <input
-                  type="text" placeholder="Your full name" value={name}
+                  id="stea-auth-name"
+                  type="text"
+                  placeholder="Your full name"
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={inputStyle}
-                  onFocus={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.hover; }}
-                  onBlur={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.panel2; }}
+                  className={fieldClass}
+                  autoComplete="name"
                 />
               </div>
             )}
 
             {/* Email */}
             <div>
-              <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 700, color: TOKENS.text }}>Email</label>
+              <label className={labelClass} htmlFor="stea-auth-email">Email</label>
               <input
-                type="email" placeholder="your@email.com" value={email}
+                id="stea-auth-email"
+                type="email"
+                placeholder="your@email.com"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={inputStyle}
-                onFocus={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.hover; }}
-                onBlur={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.panel2; }}
+                className={fieldClass}
+                autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
               />
             </div>
 
             {/* Password */}
             <div>
-              <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 700, color: TOKENS.text }}>Password</label>
-              <div style={{ position: "relative" }}>
+              <label className={labelClass} htmlFor="stea-auth-password">Password</label>
+              <div className="relative">
                 <input
-                  type={showPw ? "text" : "password"} placeholder="Password" value={password}
+                  id="stea-auth-password"
+                  type={showPw ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  style={{ ...inputStyle, paddingRight: 42 }}
-                  onFocus={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.hover; }}
-                  onBlur={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.panel2; }}
+                  className={`${fieldClass} pr-11`}
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
                   onKeyDown={(e) => { if (e.key === "Enter" && mode === "login") handleEmailAuth(); }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw(!showPw)}
-                  style={{
-                    position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
-                    background: "none", border: "none", color: TOKENS.text3,
-                    cursor: "pointer", padding: 6, display: "flex",
-                  }}
+                  className="absolute right-2 top-1/2 flex -translate-y-1/2 p-1.5 text-slate-400 transition-colors hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
                   aria-label={showPw ? "Hide password" : "Show password"}
                 >
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -481,28 +458,26 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
             {/* Confirm Password (register only) */}
             {mode === "register" && (
               <div>
-                <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 700, color: TOKENS.text }}>Confirm Password</label>
+                <label className={labelClass} htmlFor="stea-auth-confirm">Confirm Password</label>
                 <input
-                  type="password" placeholder="Confirm password" value={confirmPw}
+                  id="stea-auth-confirm"
+                  type="password"
+                  placeholder="Confirm password"
+                  value={confirmPw}
                   onChange={(e) => setConfirmPw(e.target.value)}
-                  style={inputStyle}
-                  onFocus={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.hover; }}
-                  onBlur={(e) => { e.target.style.borderColor = TOKENS.gold; e.target.style.background = TOKENS.panel2; }}
+                  className={fieldClass}
+                  autoComplete="new-password"
                   onKeyDown={(e) => { if (e.key === "Enter") handleEmailAuth(); }}
                 />
               </div>
             )}
 
-            {/* Forgot password link */}
+            {/* Forgot password */}
             {mode === "login" && (
               <button
-                type="button" onClick={() => switchMode("forgot")}
-                style={{
-                  background: "none", border: "none", color: TOKENS.text3,
-                  fontFamily: "inherit", fontSize: 12.5, fontWeight: 600,
-                  cursor: "pointer", textAlign: "right", padding: "0 2px",
-                  alignSelf: "flex-end",
-                }}
+                type="button"
+                onClick={() => switchMode("forgot")}
+                className="-mt-0.5 self-end px-0.5 py-1 text-xs font-medium text-amber-500 transition-colors hover:text-amber-600"
               >
                 Forgot password?
               </button>
@@ -510,16 +485,10 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
 
             {/* Submit */}
             <button
-              type="button" onClick={handleEmailAuth} disabled={loading}
-              style={{
-                width: "100%", height: 48, borderRadius: 12, border: 0,
-                background: `linear-gradient(180deg, ${TOKENS.goldHi}, ${TOKENS.gold})`,
-                color: "#111", fontFamily: "inherit", fontSize: 14, fontWeight: 900,
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
-                boxShadow: "0 8px 24px rgba(245,166,35,.2)",
-                transition: "transform 0.12s ease, filter 0.12s ease",
-              }}
+              type="button"
+              onClick={handleEmailAuth}
+              disabled={loading}
+              className={`${primaryClass} mt-3`}
             >
               {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
             </button>

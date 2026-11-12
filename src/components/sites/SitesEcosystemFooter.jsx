@@ -9,7 +9,8 @@
  *  - Mobile (320px - 430px): strict 2x2 grid, tight padding, no vertical giant cards
  */
 import { memo } from "react";
-import { ArrowUpRight, ShieldCheck, Download } from "lucide-react";
+import { ShieldCheck, Download } from "lucide-react";
+import SteaTerminalWidget from "./SteaTerminalWidget.jsx";
 import { TOKENS } from "./tokens.js";
 import { usePWA } from "../../contexts/PWAContext.jsx";
 import { useAuth } from "../../hooks/useAuth.js";
@@ -58,106 +59,12 @@ function FooterInstallLink() {
   );
 }
 
-const ECOSYSTEM_APPS = [
-  {
-    id: "stea-code",
-    name: "STEA Code",
-    tagline: "Dev Studio",
-    icon: "/stea-apps/stea-code.png",
-    url: "https://stea.africa/code",
-    badge: "Studio",
-  },
-  {
-    id: "stea-360",
-    name: "STEA 360",
-    tagline: "Business & Tax",
-    icon: "/stea-apps/stea360.png",
-    url: "https://stea360.com",
-    badge: "Enterprise",
-  },
-  {
-    id: "stea-vpn",
-    name: "STEA VPN",
-    tagline: "Secure Private Internet",
-    icon: "/stea-apps/stea-vpn.png",
-    url: "https://vpn.stea.africa",
-    badge: "Secure",
-  },
-  {
-    id: "isaya-masika",
-    name: "Isaya Masika",
-    tagline: "Portfolio",
-    icon: "/isaya-masika-portrait.webp",
-    fallbackIcon: "IM",
-    url: "https://isayamasika.stea.africa",
-    badge: "Creator",
-  },
-];
-
 function SitesEcosystemFooter() {
   const { user } = useAuth();
   return (
     <div className="sites-ecosystem-footer-wrap">
-      {/* ================= STEA ECOSYSTEM ================= */}
-      <section className="sites-eco-section" aria-label="STEA Ecosystem">
-        <div className="sites-eco-head">
-          <h3 className="sites-eco-title">
-            STEA Ecosystem
-          </h3>
-          <p className="sites-eco-desc">
-            Digital products designed, built and operated by STEA.
-          </p>
-        </div>
-
-        <div className="sites-eco-grid" role="list">
-          {ECOSYSTEM_APPS.map((app) => (
-            <a
-              key={app.id}
-              href={app.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sites-eco-card"
-              role="listitem"
-            >
-              <div className="sites-eco-card-left">
-                {app.fallbackIcon ? (
-                  <div style={{ position: "relative", width: 30, height: 30 }}>
-                    <div className="sites-eco-app-icon sites-eco-fallback-icon" style={{ position: "absolute", inset: 0, background: "rgba(245,166,35,0.15)", color: "#F5A623", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: "bold", borderRadius: "7px" }}>
-                      {app.fallbackIcon}
-                    </div>
-                    <img
-                      src={app.icon}
-                      alt={app.name}
-                      className="sites-eco-app-icon"
-                      width="32"
-                      height="32"
-                      loading="lazy"
-                      style={{ position: "absolute", inset: 0, opacity: 0, transition: "opacity 0.2s" }}
-                      onLoad={(e) => { e.target.style.opacity = 1; }}
-                    />
-                  </div>
-                ) : (
-                  <img
-                    src={app.icon}
-                    alt={app.name}
-                    className="sites-eco-app-icon"
-                    width="32"
-                    height="32"
-                    loading="lazy"
-                  />
-                )}
-                <div className="sites-eco-app-text">
-                  <div className="sites-eco-app-name-row">
-                    <strong className="sites-eco-app-name">{app.name}</strong>
-                  </div>
-                  <span className="sites-eco-app-tagline">{app.tagline}</span>
-                </div>
-              </div>
-              <ArrowUpRight size={13} className="sites-eco-app-arrow" aria-hidden />
-            </a>
-          ))}
-        </div>
-      </section>
+      {/* Ecosystem now told as a boot log instead of a card grid */}
+      <SteaTerminalWidget />
 
       {/* ================= BRAND FOOTER ================= */}
       <footer className="sites-footer-block" role="contentinfo">

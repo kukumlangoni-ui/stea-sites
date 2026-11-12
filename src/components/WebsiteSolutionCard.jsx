@@ -23,7 +23,7 @@ export function WebsiteCardSkeleton({ index = 0 }) {
         <div className="h-4 w-4 animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
       </div>
       <div className="mt-4 flex items-center gap-3">
-        <div className="h-11 w-11 shrink-0 animate-pulse rounded-xl bg-slate-100 dark:bg-white/5" />
+        <div className="h-14 w-14 shrink-0 animate-pulse rounded-2xl bg-slate-100 dark:bg-white/5" />
         <div className="min-w-0 flex-1 space-y-2">
           <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200 dark:bg-white/10" />
           <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
@@ -229,19 +229,25 @@ export function WebsiteSolutionCard({
 
       {/* ── Middle row: logo + text, side by side ── */}
       <div className="mt-4 flex min-w-0 items-center gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200/70 bg-slate-50 transition-transform duration-200 ease-out group-hover:scale-105 dark:border-white/5 dark:bg-[#0A0A0A]">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-50 transition-transform duration-200 ease-out group-hover:scale-105 dark:bg-white/5">
           <WebsiteIcon
             website={site}
-            size={28}
-            style={{ background: "transparent", border: "0", boxShadow: "none" }}
+            size={56}
+            imgScale={0.86}
+            style={{
+              background: "transparent",
+              border: "0",
+              boxShadow: "none",
+              borderRadius: 0,
+            }}
           />
         </div>
 
         <div className="flex min-w-0 flex-col">
-          <h3 className="truncate text-[14px] font-semibold tracking-tight text-slate-900 dark:text-white">
+          <h3 className="truncate text-base font-bold tracking-tight text-slate-900 dark:text-white">
             {title}
           </h3>
-          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[11px] text-slate-500 dark:text-zinc-400">
+          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-sm text-slate-500 dark:text-zinc-400">
             <ArrowUpRight
               size={12}
               aria-hidden="true"
@@ -255,19 +261,19 @@ export function WebsiteSolutionCard({
       {/* ── Bottom row: status dot + tag ── */}
       <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-white/5">
         {isPremium ? (
-          <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-medium text-amber-600 dark:text-[#F5A623]">
+          <span className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-amber-500 dark:text-[#F5A623]">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-[#F5A623]" aria-hidden="true" />
             Premium
           </span>
         ) : (
-          <span className="flex min-w-0 items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+          <span className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 dark:bg-emerald-400" aria-hidden="true" />
             Free
           </span>
         )}
 
         {footerTag ? (
-          <span className="truncate text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+          <span className="truncate text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
             {footerTag}
           </span>
         ) : null}

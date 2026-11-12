@@ -1,10 +1,10 @@
 /**
- * WebsiteQuickInfoModal — Premium Compact Website Command & Info Modal
+ * WebsiteQuickInfoModal — iOS-sheet style command panel for a website card.
  *
- * Designed to replace the old full-page detail navigation for website card clicks.
- * Fits within ~460px width, keeping the user in discovery context without refetching.
+ * Mobile: bottom sheet anchored to the safe area, scrollable, never clipped.
+ * Desktop: same sheet centred in the viewport.
  */
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Star, ExternalLink, Share2, Copy, Check, X, ShieldCheck } from "lucide-react";
 import WebsiteIcon from "./WebsiteIcon.jsx";
@@ -45,22 +45,19 @@ export default function WebsiteQuickInfoModal({
   const [copied, setCopied] = useState(false);
   const [shareFeedback, setShareFeedback] = useState("");
 
-  // Keyboard navigation: Escape key closes modal
+  // Escape closes the sheet
   useEffect(() => {
-    if (!site) return;
+    if (!site) return undefined;
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [site, onClose]);
 
-  // Lock body scroll while the modal is open, and restore exactly what was
-  // there before (setting "visible" used to fight the sites shell's own CSS).
+  // Lock body scroll while open, restore exactly what was there before
   useEffect(() => {
-    if (!site) return;
+    if (!site) return undefined;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -72,7 +69,7 @@ export default function WebsiteQuickInfoModal({
 
   const title = site.name || site.title || "Untitled Website";
   const rawUrl = site.url || site.websiteUrl || site.link || "";
-  const targetUrl = rawUrl.startsWith("http") ? rawUrl : (rawUrl ? `https://${rawUrl}` : "");
+  const targetUrl = rawUrl.startsWith("http") ? rawUrl : rawUrl ? `https://${rawUrl}` : "";
 
   let domain = "";
   try {
@@ -84,32 +81,31 @@ export default function WebsiteQuickInfoModal({
   const categorySlug = normalizeWebsiteCategorySlug(site.category || site.categorySlug || "");
   const categoryLabel = getWebsiteCategoryLabel(categorySlug) || site.category || "General";
   const desc = site.description || site.desc || "Explore this curated website on STEA.";
-  const isPaid = Boolean(
+  const isPremium = Boolean(
     site.isPaid ||
-    site.pricing === "Paid" ||
-    site.pricing === "Subscription" ||
-    site.isTrusted ||
-    site.trusted ||
-    site.isPinned ||
-    site.pinned ||
-    site.featured ||
-    site.isFeatured ||
-    site.sourceStatus === "official" ||
-    site.sourceStatus === "verified" ||
-    site.verified ||
-    site.isOfficial
+      site.pricing === "Paid" ||
+      site.pricing === "Subscription" ||
+      site.isTrusted ||
+      site.trusted ||
+      site.isPinned ||
+      site.pinned ||
+      site.featured ||
+      site.isFeatured ||
+      site.sourceStatus === "official" ||
+      site.sourceStatus === "verified" ||
+      site.verified ||
+      site.isOfficial
   );
   const pricingTag = site.pricing || site.pricingType || "";
 
-  const canonicalSteaUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/site/${site.slug || site.id}`
-    : `https://stea.africa/site/${site.slug || site.id}`;
+  const canonicalSteaUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/site/${site.slug || site.id}`
+      : `https://stea.africa/site/${site.slug || site.id}`;
 
   const handleOpenExternal = () => {
     rememberWebsite(site);
-    if (targetUrl) {
-      window.open(targetUrl, "_blank", "noopener,noreferrer");
-    }
+    if (targetUrl) window.open(targetUrl, "_blank", "noopener,noreferrer");
     onClose();
   };
 
@@ -119,7 +115,6 @@ export default function WebsiteQuickInfoModal({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
       const ta = document.createElement("textarea");
       ta.value = canonicalSteaUrl;
       document.body.appendChild(ta);
@@ -134,15 +129,9 @@ export default function WebsiteQuickInfoModal({
   const handleShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: `${title} on STEA`,
-          text: desc,
-          url: canonicalSteaUrl,
-        });
+        await navigator.share({ title: `${title} on STEA`, text: desc, url: canonicalSteaUrl });
       } catch (err) {
-        if (err.name !== "AbortError") {
-          handleCopyLink();
-        }
+        if (err.name !== "AbortError") handleCopyLink();
       }
     } else {
       handleCopyLink();
@@ -152,16 +141,17 @@ export default function WebsiteQuickInfoModal({
   };
 
   const handleFavClick = () => {
-    if (onToggleFavorite) {
-      onToggleFavorite(site);
-    }
+    if (onToggleFavorite) onToggleFavorite(site);
   };
 
   if (typeof document === "undefined") return null;
 
+  const secondaryBtn =
+    "flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/5 bg-[#2C2C2E] text-sm font-medium text-white transition-colors duration-150 active:bg-[#3A3A3C]";
+
   return createPortal(
     <div
-      className="stea-quick-info-overlay"
+      className="fixed inset-0 z-[99999] flex items-end justify-center sm:items-center"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -169,70 +159,110 @@ export default function WebsiteQuickInfoModal({
       aria-modal="true"
       aria-labelledby="quick-info-title"
     >
-      <div className="stea-quick-info-modal">
-        {/* Close Button */}
+      {/* dimmer */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-black/70 backdrop-blur-md"
+        aria-hidden="true"
+        style={{ animation: "steaQuickFade 180ms ease-out" }}
+      />
+
+      <div
+        className={[
+          "relative z-10 flex max-h-[90vh] w-full max-w-md flex-col overflow-y-auto",
+          "rounded-t-3xl border-t border-white/10 bg-[#1C1C1E] px-6 pt-6",
+          /* keep the primary button clear of the home indicator */
+          "pb-[calc(2.5rem+env(safe-area-inset-bottom))]",
+          "text-white shadow-[0_-20px_60px_rgba(0,0,0,0.6)]",
+          /* desktop: full rounded card, centred */
+          "sm:rounded-3xl sm:border sm:pb-10",
+          "sm:shadow-[0_24px_60px_rgba(0,0,0,0.6)]",
+        ].join(" ")}
+        style={{ animation: "steaSheetUp 260ms cubic-bezier(0.16,1,0.3,1)" }}
+      >
+        {/* sheet grabber (mobile only) */}
+        <div className="mx-auto mb-4 h-1 w-10 shrink-0 rounded-full bg-white/20 sm:hidden" aria-hidden="true" />
+
+        {/* close */}
         <button
           type="button"
-          className="stea-quick-info-close-btn"
           onClick={onClose}
           aria-label="Close"
           title="Close (Esc)"
+          className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-150 hover:bg-white/10 hover:text-white"
         >
           <X size={16} />
         </button>
 
-        {/* Brand Display (Icon, Title, Domain) */}
-        <div className="stea-quick-info-head">
-          <div className="stea-quick-info-icon-wrap">
-            <WebsiteIcon website={site} size={48} />
-          </div>
-          <h2 id="quick-info-title" className="stea-quick-info-title">{title}</h2>
-          <span className="stea-quick-info-domain">{domain || "External website"}</span>
+        {/* ── App icon: the logo IS the icon, no box ── */}
+        <div className="mx-auto flex h-20 w-20 shrink-0 items-center justify-center">
+          <WebsiteIcon
+            website={site}
+            size={80}
+            imgScale={1}
+            style={{
+              background: "transparent",
+              border: "0",
+              borderRadius: 16,
+              boxShadow: "0 10px 24px rgba(0,0,0,0.5)",
+            }}
+          />
         </div>
 
-        {/* Badges / Meta Strip */}
-        <div className="stea-quick-info-badges">
-          <span className={`stea-quick-badge ${isPaid ? "stea-quick-badge-paid" : "stea-quick-badge-free"}`}>
-            <ShieldCheck size={11} strokeWidth={2.5} />
-            <span>{isPaid ? "PAID" : "FREE"}</span>
-          </span>
-          <span className="stea-quick-badge stea-quick-badge-category">
-            {categoryLabel}
-          </span>
-          {pricingTag && (
-            <span className="stea-quick-badge stea-quick-badge-pricing">
-              {pricingTag}
+        {/* ── Title / domain ── */}
+        <h2
+          id="quick-info-title"
+          className="mt-4 text-center text-2xl font-bold tracking-tight text-white"
+        >
+          {title}
+        </h2>
+        <p className="mt-1 text-center text-sm text-zinc-400">{domain || "External website"}</p>
+
+        {/* ── badges ── */}
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          {isPremium ? (
+            <span className="flex items-center gap-1.5 rounded-full border border-[#F5A623]/20 bg-[#F5A623]/10 px-3 py-1 text-xs font-semibold text-[#F5A623]">
+              <ShieldCheck size={12} strokeWidth={2.5} />
+              Premium
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
+              <ShieldCheck size={12} strokeWidth={2.5} />
+              Free
             </span>
           )}
+          <span className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-zinc-300">
+            {categoryLabel}
+          </span>
+          {pricingTag && !isPremium ? (
+            <span className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-zinc-300">
+              {pricingTag}
+            </span>
+          ) : null}
         </div>
 
-        {/* Short Description */}
-        <p className="stea-quick-info-desc">
-          {desc}
-        </p>
+        {/* ── description ── */}
+        <p className="mt-4 text-center text-[15px] leading-relaxed text-zinc-300">{desc}</p>
 
-        {/* Primary Action: Open Website */}
-        <div className="stea-quick-info-primary-action">
+        {/* ── primary action ── */}
+        <button
+          type="button"
+          onClick={handleOpenExternal}
+          className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-lg font-bold text-black shadow-[0_4px_14px_rgba(245,166,35,0.3)] transition-all duration-200 hover:scale-[1.02] hover:bg-amber-400 active:scale-[0.98]"
+        >
+          <span>Open Website</span>
+          <ExternalLink size={18} strokeWidth={2.5} />
+        </button>
+
+        {/* ── secondary actions ── */}
+        <div className="mt-4 flex gap-3">
           <button
             type="button"
-            className="stea-quick-info-open-btn"
-            onClick={handleOpenExternal}
-          >
-            <span>Open Website</span>
-            <ExternalLink size={15} strokeWidth={2.5} />
-          </button>
-        </div>
-
-        {/* Secondary Actions (Favorite, Share, Copy Link) */}
-        <div className="stea-quick-info-secondary-actions">
-          <button
-            type="button"
-            className={`stea-quick-action-btn ${isFavorite ? "is-active" : ""}`}
+            className={`${secondaryBtn} ${isFavorite ? "!border-[#F5A623]/35 !bg-[#F5A623]/10 text-[#F5A623]" : ""}`}
             onClick={handleFavClick}
             title={isFavorite ? "Saved to favorites" : "Add to favorites"}
           >
             <Star
-              size={14}
+              size={15}
               fill={isFavorite ? "#F5A623" : "none"}
               stroke={isFavorite ? "#F5A623" : "currentColor"}
               strokeWidth={2}
@@ -240,31 +270,21 @@ export default function WebsiteQuickInfoModal({
             <span>{isFavorite ? "Saved" : "Favorite"}</span>
           </button>
 
-          <button
-            type="button"
-            className="stea-quick-action-btn"
-            onClick={handleShare}
-            title="Share this site"
-          >
-            <Share2 size={14} strokeWidth={2} />
+          <button type="button" className={secondaryBtn} onClick={handleShare} title="Share this site">
+            <Share2 size={15} strokeWidth={2} />
             <span>{shareFeedback || "Share"}</span>
           </button>
 
-          <button
-            type="button"
-            className="stea-quick-action-btn"
-            onClick={handleCopyLink}
-            title="Copy STEA link"
-          >
+          <button type="button" className={secondaryBtn} onClick={handleCopyLink} title="Copy STEA link">
             {copied ? (
               <>
-                <Check size={14} strokeWidth={2.5} style={{ color: "#10B981" }} />
-                <span style={{ color: "#10B981" }}>Copied!</span>
+                <Check size={15} strokeWidth={2.5} className="text-emerald-400" />
+                <span className="text-emerald-400">Copied</span>
               </>
             ) : (
               <>
-                <Copy size={14} strokeWidth={2} />
-                <span>Copy Link</span>
+                <Copy size={15} strokeWidth={2} />
+                <span>Copy</span>
               </>
             )}
           </button>
@@ -272,253 +292,17 @@ export default function WebsiteQuickInfoModal({
       </div>
 
       <style>{`
-        .stea-quick-info-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          width: 100vw;
-          height: 100vh;
-          z-index: 99999;
-          background: rgba(4, 6, 12, 0.82);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 16px;
-          box-sizing: border-box;
-          touch-action: pan-y;
-          overscroll-behavior: contain;
-          animation: steaQuickOverlayFade 180ms ease-out;
-        }
-
-        @keyframes steaQuickOverlayFade {
+        @keyframes steaQuickFade {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-
-        .stea-quick-info-modal {
-          background: linear-gradient(180deg, #121626 0%, #0c0f1b 100%);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 20px;
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 32px rgba(245, 166, 35, 0.1);
-          width: 100%;
-          max-width: 460px;
-          padding: 24px 22px 20px;
-          box-sizing: border-box;
-          position: relative;
-          color: #FFFFFF;
-          font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
-          animation: steaQuickModalScale 200ms cubic-bezier(0.16, 1, 0.3, 1);
-          max-height: 90vh;
-          overflow-y: auto;
+        @keyframes steaSheetUp {
+          from { opacity: 0; transform: translateY(28px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes steaQuickModalScale {
-          from {
-            opacity: 0;
-            transform: scale(0.94) translateY(8px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-
-        .stea-quick-info-close-btn {
-          position: absolute;
-          top: 14px;
-          right: 14px;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: rgba(255, 255, 255, 0.6);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 140ms ease;
-        }
-
-        .stea-quick-info-close-btn:hover {
-          background: rgba(255, 255, 255, 0.12);
-          color: #FFFFFF;
-        }
-
-        /* Head */
-        .stea-quick-info-head {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          margin-bottom: 12px;
-        }
-
-        .stea-quick-info-icon-wrap {
-          width: 54px;
-          height: 54px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 10px;
-        }
-
-        .stea-quick-info-title {
-          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
-          font-size: 20px;
-          font-weight: 850;
-          letter-spacing: -0.02em;
-          color: #FFFFFF;
-          margin: 0 0 3px;
-        }
-
-        .stea-quick-info-domain {
-          font-size: 13px;
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.45);
-          letter-spacing: -0.01em;
-        }
-
-        /* Badges */
-        .stea-quick-info-badges {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          flex-wrap: wrap;
-          margin-bottom: 14px;
-        }
-
-        .stea-quick-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 11px;
-          font-weight: 750;
-          padding: 3px 9px;
-          border-radius: 999px;
-          line-height: 1.2;
-        }
-
-        .stea-quick-badge-trusted,
-        .stea-quick-badge-paid {
-          background: rgba(139, 92, 246, 0.2);
-          border: 1px solid rgba(139, 92, 246, 0.38);
-          color: #C4B5FD;
-          letter-spacing: 0.05em;
-        }
-
-        .stea-quick-badge-free {
-          background: rgba(16, 185, 129, 0.2);
-          border: 1px solid rgba(16, 185, 129, 0.38);
-          color: #6EE7B7;
-          letter-spacing: 0.05em;
-        }
-
-        .stea-quick-badge-category {
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: rgba(255, 255, 255, 0.8);
-        }
-
-        .stea-quick-badge-pricing {
-          background: rgba(245, 166, 35, 0.12);
-          border: 1px solid rgba(245, 166, 35, 0.28);
-          color: #FFD17C;
-        }
-
-        /* Description */
-        .stea-quick-info-desc {
-          font-size: 13.5px;
-          line-height: 1.55;
-          color: rgba(255, 255, 255, 0.72);
-          text-align: center;
-          margin: 0 0 20px;
-          max-height: 85px;
-          overflow-y: auto;
-          scrollbar-width: thin;
-        }
-
-        /* Primary Button */
-        .stea-quick-info-primary-action {
-          margin-bottom: 12px;
-        }
-
-        .stea-quick-info-open-btn {
-          width: 100%;
-          min-height: 46px;
-          border-radius: 12px;
-          background: linear-gradient(135deg, #F5A623 0%, #E08E0B 100%);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          color: #000000;
-          font-weight: 800;
-          font-size: 14.5px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          cursor: pointer;
-          transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
-          box-shadow: 0 4px 18px rgba(245, 166, 35, 0.35);
-        }
-
-        .stea-quick-info-open-btn:hover {
-          transform: translateY(-1px);
-          filter: brightness(1.05);
-          box-shadow: 0 6px 24px rgba(245, 166, 35, 0.45);
-        }
-
-        /* Secondary Actions */
-        .stea-quick-info-secondary-actions {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .stea-quick-action-btn {
-          flex: 1;
-          min-height: 40px;
-          border-radius: 10px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.09);
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 12.5px;
-          font-weight: 700;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          cursor: pointer;
-          transition: all 140ms ease;
-        }
-
-        .stea-quick-action-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: #FFFFFF;
-          border-color: rgba(255, 255, 255, 0.16);
-        }
-
-        .stea-quick-action-btn.is-active {
-          color: #F5A623;
-          border-color: rgba(245, 166, 35, 0.35);
-          background: rgba(245, 166, 35, 0.08);
-        }
-
-        @media (max-width: 480px) {
-          .stea-quick-info-overlay {
-            align-items: flex-end;
-            padding: 0;
-          }
-          .stea-quick-info-modal {
-            max-width: 100%;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-            padding: 24px 18px 32px;
-          }
+        @media (prefers-reduced-motion: reduce) {
+          @keyframes steaQuickFade { from { opacity: 1; } to { opacity: 1; } }
+          @keyframes steaSheetUp { from { opacity: 1; transform: none; } to { opacity: 1; transform: none; } }
         }
       `}</style>
     </div>,

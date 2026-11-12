@@ -1,8 +1,8 @@
 /**
- * WebsiteQuickInfoModal — iOS-sheet style command panel for a website card.
+ * WebsiteQuickInfoModal — centred iOS-style alert card.
  *
- * Mobile: bottom sheet anchored to the safe area, scrollable, never clipped.
- * Desktop: same sheet centred in the viewport.
+ * Centred on every breakpoint (no bottom sheet), light/dark aware,
+ * scale-and-fade entrance, scrolls inside an 85vh cap.
  */
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -45,7 +45,6 @@ export default function WebsiteQuickInfoModal({
   const [copied, setCopied] = useState(false);
   const [shareFeedback, setShareFeedback] = useState("");
 
-  // Escape closes the sheet
   useEffect(() => {
     if (!site) return undefined;
     const handleKeyDown = (e) => {
@@ -55,7 +54,6 @@ export default function WebsiteQuickInfoModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [site, onClose]);
 
-  // Lock body scroll while open, restore exactly what was there before
   useEffect(() => {
     if (!site) return undefined;
     const previousOverflow = document.body.style.overflow;
@@ -140,150 +138,147 @@ export default function WebsiteQuickInfoModal({
     }
   };
 
-  const handleFavClick = () => {
-    if (onToggleFavorite) onToggleFavorite(site);
-  };
+  const secondaryBtn = [
+    "flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-medium transition-colors",
+    "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100",
+    "dark:border-white/5 dark:bg-[#2C2C2E] dark:text-white dark:hover:bg-[#3A3A3C]",
+  ].join(" ");
 
   if (typeof document === "undefined") return null;
 
-  const secondaryBtn =
-    "flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/5 bg-[#2C2C2E] text-sm font-medium text-white transition-colors duration-150 active:bg-[#3A3A3C]";
-
   return createPortal(
     <div
-      className="fixed inset-0 z-[99999] flex items-end justify-center sm:items-center"
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm dark:bg-black/80 sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="quick-info-title"
+      style={{ animation: "steaQuickFade 160ms ease-out" }}
     >
-      {/* dimmer */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-black/70 backdrop-blur-md"
-        aria-hidden="true"
-        style={{ animation: "steaQuickFade 180ms ease-out" }}
-      />
-
       <div
         className={[
-          "relative z-10 flex max-h-[90vh] w-full flex-col overflow-y-auto sm:max-w-md",
-          "rounded-t-3xl border-t border-white/10 bg-[#1C1C1E] px-6 pt-6",
-          /* keep the primary button clear of the home indicator */
-          "pb-[calc(2.5rem+env(safe-area-inset-bottom))]",
-          "text-white shadow-[0_-20px_60px_rgba(0,0,0,0.6)]",
-          /* desktop: full rounded card, centred */
-          "sm:rounded-3xl sm:border sm:pb-10",
-          "sm:shadow-[0_24px_60px_rgba(0,0,0,0.6)]",
+          "relative w-full max-w-sm overflow-y-auto overflow-x-hidden",
+          "max-h-[85vh] rounded-3xl bg-white shadow-2xl dark:bg-[#1C1C1E] sm:max-w-md",
+          "text-slate-900 dark:text-white",
         ].join(" ")}
-        style={{ animation: "steaSheetUp 260ms cubic-bezier(0.16,1,0.3,1)" }}
+        style={{ animation: "steaModalPop 220ms cubic-bezier(0.16,1,0.3,1)" }}
       >
-        {/* sheet grabber (mobile only) */}
-        <div className="mx-auto mb-4 h-1 w-10 shrink-0 rounded-full bg-white/20 sm:hidden" aria-hidden="true" />
-
         {/* close */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
           title="Close (Esc)"
-          className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-150 hover:bg-white/10 hover:text-white"
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-slate-200 dark:bg-white/10 dark:text-zinc-400 dark:hover:bg-white/20"
         >
           <X size={16} />
         </button>
 
-        {/* ── App icon: the logo IS the icon, no box ── */}
-        <div className="mx-auto flex h-20 w-20 shrink-0 items-center justify-center">
-          <WebsiteIcon
-            website={site}
-            size={80}
-            imgScale={1}
-            style={{
-              background: "transparent",
-              border: "0",
-              borderRadius: 16,
-              boxShadow: "0 10px 24px rgba(0,0,0,0.5)",
-            }}
-          />
+        {/* body */}
+        <div className="px-6 pt-8">
+          {/* App icon: the logo IS the icon, no box */}
+          <div className="mx-auto flex h-20 w-20 shrink-0 items-center justify-center">
+            <WebsiteIcon
+              website={site}
+              size={80}
+              imgScale={1}
+              style={{
+                background: "transparent",
+                border: "0",
+                borderRadius: 16,
+                boxShadow: "0 8px 22px rgba(0,0,0,0.28)",
+              }}
+            />
+          </div>
+
+          <h2
+            id="quick-info-title"
+            className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-white"
+          >
+            {title}
+          </h2>
+          <p className="mt-1 text-center text-sm text-slate-500 dark:text-zinc-400">
+            {domain || "External website"}
+          </p>
+
+          {/* badges */}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            {isPremium ? (
+              <span className="flex items-center gap-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-500">
+                <ShieldCheck size={12} strokeWidth={2.5} />
+                Premium
+              </span>
+            ) : (
+              <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <ShieldCheck size={12} strokeWidth={2.5} />
+                Free
+              </span>
+            )}
+            <span className="flex items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300">
+              {categoryLabel}
+            </span>
+            {pricingTag && !isPremium ? (
+              <span className="flex items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300">
+                {pricingTag}
+              </span>
+            ) : null}
+          </div>
+
+          {/* description */}
+          <p className="mt-4 text-center text-[15px] leading-relaxed text-slate-600 dark:text-zinc-300">
+            {desc}
+          </p>
         </div>
 
-        {/* ── Title / domain ── */}
-        <h2
-          id="quick-info-title"
-          className="mt-4 text-center text-2xl font-bold tracking-tight text-white"
-        >
-          {title}
-        </h2>
-        <p className="mt-1 text-center text-sm text-zinc-400">{domain || "External website"}</p>
-
-        {/* ── badges ── */}
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-          {isPremium ? (
-            <span className="flex items-center gap-1.5 rounded-full border border-[#F5A623]/20 bg-[#F5A623]/10 px-3 py-1 text-xs font-semibold text-[#F5A623]">
-              <ShieldCheck size={12} strokeWidth={2.5} />
-              Premium
-            </span>
-          ) : (
-            <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
-              <ShieldCheck size={12} strokeWidth={2.5} />
-              Free
-            </span>
-          )}
-          <span className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-zinc-300">
-            {categoryLabel}
-          </span>
-          {pricingTag && !isPremium ? (
-            <span className="flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-zinc-300">
-              {pricingTag}
-            </span>
-          ) : null}
-        </div>
-
-        {/* ── description ── */}
-        <p className="mt-4 text-center text-[15px] leading-relaxed text-zinc-300">{desc}</p>
-
-        {/* ── primary action ── */}
-        <button
-          type="button"
-          onClick={handleOpenExternal}
-          className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-lg font-bold text-black shadow-[0_4px_14px_rgba(245,166,35,0.3)] transition-all duration-200 hover:scale-[1.02] hover:bg-amber-400 active:scale-[0.98]"
-        >
-          <span>Open Website</span>
-          <ExternalLink size={18} strokeWidth={2.5} />
-        </button>
-
-        {/* ── secondary actions ── */}
-        <div className="mt-4 flex gap-3">
+        {/* primary action */}
+        <div className="mt-6 px-6">
           <button
             type="button"
-            className={`${secondaryBtn} ${isFavorite ? "!border-[#F5A623]/35 !bg-[#F5A623]/10 text-[#F5A623]" : ""}`}
-            onClick={handleFavClick}
+            onClick={handleOpenExternal}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 text-lg font-bold text-black shadow-[0_4px_14px_rgba(245,166,35,0.3)] transition-all duration-200 hover:scale-[1.02] hover:bg-amber-400 active:scale-[0.98]"
+          >
+            <span>Open Website</span>
+            <ExternalLink size={18} strokeWidth={2.5} />
+          </button>
+        </div>
+
+        {/* secondary actions */}
+        <div className="mt-6 flex gap-2 px-6 pb-6">
+          <button
+            type="button"
+            className={`${secondaryBtn} ${
+              isFavorite
+                ? "!border-amber-500/35 !bg-amber-500/10 !text-amber-600 dark:!text-[#F5A623]"
+                : ""
+            }`}
+            onClick={() => onToggleFavorite && onToggleFavorite(site)}
             title={isFavorite ? "Saved to favorites" : "Add to favorites"}
           >
             <Star
-              size={15}
-              fill={isFavorite ? "#F5A623" : "none"}
-              stroke={isFavorite ? "#F5A623" : "currentColor"}
+              size={16}
+              fill={isFavorite ? "currentColor" : "none"}
+              stroke="currentColor"
               strokeWidth={2}
             />
             <span>{isFavorite ? "Saved" : "Favorite"}</span>
           </button>
 
           <button type="button" className={secondaryBtn} onClick={handleShare} title="Share this site">
-            <Share2 size={15} strokeWidth={2} />
+            <Share2 size={16} strokeWidth={2} />
             <span>{shareFeedback || "Share"}</span>
           </button>
 
           <button type="button" className={secondaryBtn} onClick={handleCopyLink} title="Copy STEA link">
             {copied ? (
               <>
-                <Check size={15} strokeWidth={2.5} className="text-emerald-400" />
-                <span className="text-emerald-400">Copied</span>
+                <Check size={16} strokeWidth={2.5} className="text-emerald-500" />
+                <span className="text-emerald-500">Copied</span>
               </>
             ) : (
               <>
-                <Copy size={15} strokeWidth={2} />
+                <Copy size={16} strokeWidth={2} />
                 <span>Copy</span>
               </>
             )}
@@ -296,13 +291,14 @@ export default function WebsiteQuickInfoModal({
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        @keyframes steaSheetUp {
-          from { opacity: 0; transform: translateY(28px); }
-          to { opacity: 1; transform: translateY(0); }
+        /* centre pop — no slide-up */
+        @keyframes steaModalPop {
+          from { opacity: 0; transform: scale(0.94); }
+          to { opacity: 1; transform: scale(1); }
         }
         @media (prefers-reduced-motion: reduce) {
           @keyframes steaQuickFade { from { opacity: 1; } to { opacity: 1; } }
-          @keyframes steaSheetUp { from { opacity: 1; transform: none; } to { opacity: 1; transform: none; } }
+          @keyframes steaModalPop { from { opacity: 1; transform: none; } to { opacity: 1; transform: none; } }
         }
       `}</style>
     </div>,

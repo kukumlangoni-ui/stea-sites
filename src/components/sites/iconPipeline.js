@@ -157,13 +157,14 @@ export function getIconCandidates(website) {
 
   if (explicitUrl) push(explicitUrl, "stored");
 
-  // 3. Remembered winner for this domain (previous successful load).
+  // 3. Auto sources, highest quality first (Google s2 @128 beats a 32px .ico).
+  autoCandidates(domain).forEach(({ src, source }) => push(src, source));
+
+  // 4. Remembered winner, appended last: it is a fast path, not a quality
+  //    authority — a cached 32px .ico must never outrank the 128px source.
   hydrateHitCache();
   const remembered = key ? hitCache.get(key) : null;
   if (remembered) push(remembered, "remembered");
-
-  // 4/5/6. Auto sources, fastest & most reliable first.
-  autoCandidates(domain).forEach(({ src, source }) => push(src, source));
 
   // Drop sources already known to fail in this session.
   const fails = key ? missCache.get(key) : null;

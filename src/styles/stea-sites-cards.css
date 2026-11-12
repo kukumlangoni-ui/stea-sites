@@ -506,3 +506,8 @@
     opacity: 1 !important;
   }
 }
+
+/* Card app icon: the logo is the icon — softer shadow on the light canvas */
+html.light-mode .stea-card-app-icon {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16) !important;
+}

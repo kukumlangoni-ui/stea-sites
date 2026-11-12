@@ -23,7 +23,7 @@ export function WebsiteCardSkeleton({ index = 0 }) {
         <div className="h-4 w-4 animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
       </div>
       <div className="mt-4 flex items-center gap-3">
-        <div className="h-14 w-14 shrink-0 animate-pulse rounded-2xl bg-slate-100 dark:bg-white/5" />
+        <div className="h-12 w-12 shrink-0 animate-pulse rounded-[10px] bg-slate-100 dark:bg-white/5" />
         <div className="min-w-0 flex-1 space-y-2">
           <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200 dark:bg-white/10" />
           <div className="h-3 w-1/2 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
@@ -229,16 +229,19 @@ export function WebsiteSolutionCard({
 
       {/* ── Middle row: logo + text, side by side ── */}
       <div className="mt-4 flex min-w-0 items-center gap-3">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-50 transition-transform duration-200 ease-out group-hover:scale-105 dark:bg-white/5">
+        {/* No container box: the logo itself is the app icon.
+            iOS app-icon curve (10px), image fills the tile, soft shadow for depth. */}
+        <div className="flex shrink-0 items-center justify-center transition-transform duration-200 ease-out group-hover:scale-[1.06]">
           <WebsiteIcon
             website={site}
-            size={56}
-            imgScale={0.86}
+            size={48}
+            imgScale={1}
+            className="stea-card-app-icon"
             style={{
               background: "transparent",
               border: "0",
-              boxShadow: "none",
-              borderRadius: 0,
+              borderRadius: 10,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
             }}
           />
         </div>

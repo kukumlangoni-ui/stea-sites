@@ -276,7 +276,7 @@ function WebsiteIcon({
             width: "auto",
             height: "auto",
             objectFit: "contain",
-            borderRadius: 3,
+            borderRadius: "inherit",
             display: "block",
             imageRendering: "-webkit-optimize-contrast",
           }}

@@ -17,6 +17,7 @@ const SitesMemberAuthModal = lazy(() => import("./components/sites/SitesMemberAu
 const SuggestWebsiteModal = lazy(() => import("./components/sites/SuggestWebsiteModal.jsx"));
 const AgeGateModal = lazy(() => import("./components/sites/AgeGateModal.jsx"));
 const WebsiteDetailPage = lazy(() => import("./pages/WebsiteDetailPage.jsx"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage.jsx"));
 const AfterDarkPage = lazy(() => import("./pages/AfterDarkPage.jsx"));
 const SitesAdminApp = lazy(() => import("./sites/admin/SitesAdminApp.jsx"));
 const SitesNotFoundPage = lazy(() => import("./pages/SitesNotFoundPage.jsx"));
@@ -111,6 +112,8 @@ export default function App() {
                     <Route path="/website-solutions" element={<Navigate to="/websites" replace />} />
                     <Route path="/website-solutions/:category" element={<WebsiteSolutionsPage />} />
                     <Route path="/site/:slug" element={<WebsiteDetailPage />} />
+                    <Route path="/favorites" element={<WebsiteSolutionsPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/after-dark" element={<AfterDarkPage />} />
                     <Route path="/websites/after-dark" element={<AfterDarkPage />} />
                     <Route path="/mature" element={<AfterDarkPage />} />

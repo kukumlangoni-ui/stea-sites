@@ -259,6 +259,11 @@ export default function SitesHomeHero({
           <div className="sites-hero-orb sites-hero-orb-2" />
           <div className="sites-hero-orb sites-hero-orb-3" />
           <div className="sites-hero-card-vignette" />
+          {/* iOS hero glow — gold bloom behind the eyebrow */}
+          <div
+            className="pointer-events-none absolute left-1/2 top-0 h-24 w-3/4 -translate-x-1/2 rounded-full bg-amber-500/10 blur-2xl"
+            aria-hidden="true"
+          />
         </div>
         <div className="sites-hero-inner">
           <div className="sites-hero-top">
@@ -290,19 +295,19 @@ export default function SitesHomeHero({
 
             {/* Stat boxes — modern metric tiles */}
             <div className="sites-hero-stats flex items-center gap-2 sm:gap-3" aria-hidden="false">
-              <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-white/5">
-                <span className="text-xl font-bold leading-none tabular-nums text-slate-900 dark:text-white">
+              <div className="flex h-16 w-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white transition-colors duration-300 dark:border-white/10 dark:bg-[#0A0A0A]">
+                <span className="mb-1 text-xl font-bold leading-none tabular-nums text-amber-600 dark:text-[#F5A623]">
                   {websiteCount}
                 </span>
-                <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                <span className="text-[9px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-400">
                   Sites
                 </span>
               </div>
-              <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 shadow-sm transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-white/5">
-                <span className="text-xl font-bold leading-none tabular-nums text-slate-900 dark:text-white">
+              <div className="flex h-16 w-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white transition-colors duration-300 dark:border-white/10 dark:bg-[#0A0A0A]">
+                <span className="mb-1 text-xl font-bold leading-none tabular-nums text-amber-600 dark:text-[#F5A623]">
                   {categoryCount}
                 </span>
-                <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                <span className="text-[9px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-400">
                   Categories
                 </span>
               </div>
@@ -312,7 +317,7 @@ export default function SitesHomeHero({
         {/* Search Input with Instant Dropdown */}
         <div className="sites-hero-search-wrap" ref={wrapRef}>
           <form className="sites-hero-search-form" onSubmit={submit} role="search" aria-label={t("search.websites", "Search websites")}>
-            <div className="flex h-14 w-full items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 shadow-sm transition-all duration-300 ease-in-out focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/50 dark:border-white/10 dark:bg-[#11151F]">
+            <div className="flex h-12 w-full items-center rounded-2xl border border-slate-200 bg-white px-4 transition-all duration-300 ease-in-out focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/40 dark:border-white/5 dark:bg-[#1A1A1A]">
               <Search size={18} className="shrink-0 text-slate-400 dark:text-zinc-500" aria-hidden />
               <input
                 ref={inputRef}
@@ -324,11 +329,11 @@ export default function SitesHomeHero({
                 onChange={handleInputChange}
                 onFocus={() => { if (query.trim()) setIsOpen(true); }}
                 onKeyDown={handleKeyDown}
-                placeholder={t("search.heroPlaceholder", "Search 260+ websites, tools, categories…")}
+                placeholder={t("search.heroPlaceholder", "Search websites…")}
                 aria-label={t("search.websites", "Search websites")}
                 aria-expanded={isOpen && hasSuggestions}
                 aria-autocomplete="list"
-                className="h-full min-w-0 flex-1 border-none bg-transparent text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-zinc-500"
+                className="ml-3 h-full min-w-0 flex-1 border-none bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-zinc-500"
               />
               {!query && (
                 <kbd className="hidden shrink-0 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 sm:block dark:border-white/10 dark:bg-white/5 dark:text-zinc-500" title="Press / to focus search" aria-hidden="true">/</kbd>
@@ -345,10 +350,9 @@ export default function SitesHomeHero({
               )}
               <button
                 type="submit"
-                className="flex h-10 shrink-0 items-center gap-1.5 rounded-lg bg-amber-500 px-6 text-sm font-semibold text-black transition-colors duration-300 hover:bg-amber-400 active:scale-[0.98]"
+                className="shrink-0 rounded-xl bg-[#F5A623] px-5 py-2 text-sm font-semibold text-black transition-colors duration-300 hover:bg-amber-400 active:scale-[0.98]"
               >
                 <span className="sites-search-btn-text">{t("buttons.search", "Search")}</span>
-                <Search size={15} className="sites-search-btn-icon" aria-hidden />
               </button>
             </div>
           </form>

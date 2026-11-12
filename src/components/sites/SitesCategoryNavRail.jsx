@@ -1,6 +1,7 @@
 import React, { memo, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
+import { Film } from "lucide-react";
 import { TOKENS } from "./tokens.js";
 import { getWebsiteCategoryLabel } from "../../data/websiteCategories.js";
 import { normalizeWebsiteCategorySlug } from "../../constants/categoryOrder.js";
@@ -166,6 +167,9 @@ function SitesCategoryNavRail({
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
+                {isActive && (
+                  <Film size={14} strokeWidth={2} style={{ position: "relative", zIndex: 1 }} aria-hidden="true" />
+                )}
                 <span style={{ position: "relative", zIndex: 1 }}>{item.label}</span>
                 {item.count > 0 && (
                   <span className="sites-mobile-pill-count" style={{ position: "relative", zIndex: 1 }}>{item.count}</span>
@@ -224,8 +228,8 @@ function SitesCategoryNavRail({
 
         .sites-category-mobile-pill {
           appearance: none;
-          border: 1px solid transparent;
-          background: color-mix(in srgb, var(--stea-text) 8%, transparent);
+          border: 1px solid var(--stea-border);
+          background: var(--stea-panel);
           color: ${TOKENS.text2};
           font-size: 13px;
           font-weight: 500;
@@ -252,9 +256,13 @@ function SitesCategoryNavRail({
 
         .sites-category-mobile-pill.is-active {
           background: var(--stea-gold);
-          border-color: transparent;
+          border-color: var(--stea-gold);
           color: #000000;
           font-weight: 600;
+        }
+
+        .sites-category-mobile-pill.is-active svg {
+          color: #000000;
         }
 
         .sites-mobile-pill-count {

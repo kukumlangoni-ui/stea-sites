@@ -38,6 +38,7 @@ import SitesHeader from "../components/sites/SitesHeader.jsx";
 import SitesFavicon from "../components/sites/SitesFavicon.jsx";
 import SitesHomeHero, { DEFAULT_TRENDING_CHIPS } from "../components/sites/SitesHomeHero.jsx";
 import AdBlockerProtectionBanner from "../components/sites/AdBlockerProtectionBanner.jsx";
+import SitesMobileTabBar from "../components/sites/SitesMobileTabBar.jsx";
 import SitesRecentRail from "../components/sites/SitesRecentRail.jsx";
 import SitesCategoryNavRail from "../components/sites/SitesCategoryNavRail.jsx";
 import SitesCategoryTiles from "../components/sites/SitesCategoryTiles.jsx";
@@ -575,6 +576,10 @@ function SitesV2Shell({ seo, user, isReady, progress = 0, onSignIn, children, fi
           box-sizing: border-box;
           padding: 0 16px 64px;     /* px-4 */
           overflow: visible;
+        }
+        /* the iOS tab bar owns the bottom ~72px on phones */
+        @media (max-width: 1023px) {
+          .sites-v2-main { padding-bottom: 104px; }
         }
         @media (min-width: 640px) {
           .sites-v2-main { padding: 0 24px 64px; }   /* sm:px-6 */
@@ -1321,6 +1326,8 @@ export default function WebsiteSolutionsPage() {
               <Suspense fallback={null}>
                 <SitesEcosystemFooter />
               </Suspense>
+
+              <SitesMobileTabBar />
             </main>
           </div>
         </SitesV2Shell>

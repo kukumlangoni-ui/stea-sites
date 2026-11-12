@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Star } from "lucide-react";
+import { ArrowUpRight, Star } from "lucide-react";
 import { useTranslation } from "../i18n/index.js";
 import WebsiteIcon from "./sites/WebsiteIcon.jsx";
 import { extractHostname } from "./sites/favicon.js";
@@ -151,7 +151,7 @@ export function WebsiteSolutionCard({
         "stea-card-v2 group relative flex h-full min-h-[150px] w-full min-w-0 cursor-pointer select-none flex-col md:min-h-[196px]",
         /* iOS secondary system background: #FFF / #1C1C1E */
         "rounded-2xl border border-slate-200/70 bg-white p-3 shadow-sm md:p-4",
-        "dark:border-white/5 dark:bg-[#1C1C1E]",
+        "dark:border-white/5 dark:bg-[#151515]",
         "transition-all duration-200 ease-out",
         /* hover — subtle scale + soft depth */
         "hover:scale-[1.02] hover:shadow-lg hover:shadow-slate-200/60",
@@ -165,11 +165,11 @@ export function WebsiteSolutionCard({
       {/* ── Top row: badge (left) + favorite (right) ── */}
       <div className="flex items-start justify-between gap-2">
         {isTrusted ? (
-          <span className="rounded-md border border-amber-500/20 bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-600 md:px-2 md:text-[10px] dark:text-amber-500">
+          <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:border-[#F5A623]/20 dark:bg-[#F5A623]/10 dark:text-[#F5A623]">
             Paid
           </span>
         ) : (
-          <span className="rounded-md border border-emerald-500/20 bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-600 md:px-2 md:text-[10px] dark:text-emerald-400">
+          <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
             Free
           </span>
         )}
@@ -191,33 +191,32 @@ export function WebsiteSolutionCard({
             className={
               isFavorite
                 ? "text-amber-500"
-                : "text-slate-300 dark:text-white/20"
+                : "text-slate-300 dark:text-zinc-600"
             }
           />
         </button>
       </div>
 
       {/* ── Logo ── */}
-      <div className="mt-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200/50 bg-slate-50 transition-all duration-200 ease-out group-hover:scale-105 md:mt-5 md:h-12 md:w-12 dark:border-white/5 dark:bg-white/5">
+      <div className="mb-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 transition-all duration-200 ease-out group-hover:scale-105 dark:bg-white/5">
         <WebsiteIcon
           website={site}
-          size={28}
+          size={32}
           style={{ background: "transparent", border: "0", boxShadow: "none" }}
         />
       </div>
 
       {/* ── Text block, pinned to the bottom so every card aligns ── */}
-      <div className="mt-auto min-w-0 pt-3 md:pt-5">
-        <h3 className="truncate text-[13px] font-semibold tracking-tight text-slate-900 md:text-sm dark:text-white">
+      <div className="mt-auto min-w-0">
+        <h3 className="mb-1 truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-white">
           {title}
         </h3>
-        <p className="mt-0.5 flex min-w-0 items-center gap-1 text-[11px] text-slate-500 md:mt-1 md:text-xs dark:text-[#8E8E93]">
-          <span
+        <p className="flex min-w-0 items-center gap-1 text-[11px] text-slate-500 dark:text-zinc-400">
+          <ArrowUpRight
+            size={12}
             aria-hidden="true"
-            className="shrink-0 transition-colors duration-300 group-hover:text-amber-500"
-          >
-            ↗
-          </span>
+            className="shrink-0 text-slate-400 transition-colors duration-300 group-hover:text-amber-500 dark:text-zinc-500"
+          />
           <span className="truncate">{domain || "Visit"}</span>
         </p>
         {rank ? <span className="sr-only">Rank {rank}</span> : null}

@@ -235,9 +235,10 @@ function WebsiteIcon({
 
   return (
     <span className={`sites-website-icon stea-icon-shell ${className}`} style={shellStyle} aria-hidden="true">
-      {/* Base layer: the brand glyph or the deterministic letter, visible from
-          the first frame and while the real icon is still in flight. */}
-      {status !== "loaded" && (
+      {/* Base layer: the brand glyph or a globe, shown only while no image
+          element exists. It is hidden the moment a real <img> mounts so the
+          placeholder can never sit next to the logo. */}
+      {!showImage && (
         <span className="stea-icon-base">
           {brandSvg ? (
             <svg viewBox="0 0 24 24" width={Math.round(size * 0.58)} height={Math.round(size * 0.58)} style={{ display: "block", fill: brandSvg.color }}>
@@ -266,6 +267,9 @@ function WebsiteIcon({
           onLoad={handleImageLoad}
           onError={handleImageError}
           style={{
+            position: "absolute",
+            inset: 0,
+            margin: "auto",
             maxWidth: "76%",
             maxHeight: "76%",
             width: "auto",

@@ -241,7 +241,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="sites-auth-title"
-      className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm dark:bg-black/80"
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm dark:bg-black/80"
       style={{
         opacity: visible ? 1 : 0,
         transition: "opacity 180ms ease",

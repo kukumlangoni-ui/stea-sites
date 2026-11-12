@@ -10,6 +10,7 @@
  *   - Touch-swipeable trending chips with zero overflow
  */
 import { useState, useRef, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, ArrowUpRight, ChevronRight, X } from "lucide-react";
 import { TOKENS } from "./tokens.js";
 import { useSitesLanguage } from "../../i18n/index.js";
@@ -41,6 +42,17 @@ export const HERO_ROTATING_SUBTITLES = [
   "Your all-in-one curated directory for the internet’s best tools.",
 ];
 
+/* Hero media collage: one cinematic frame per category, crossfaded behind
+   the copy. Served from /public/hero (1600px, ~70% JPEG). */
+export const HERO_IMAGES = [
+  { src: "/hero/movies.jpg", label: "Movies", placeholder: "Search movies & TV shows…" },
+  { src: "/hero/sports.jpg", label: "Sports", placeholder: "Search live sports…" },
+  { src: "/hero/books.jpg", label: "Books", placeholder: "Search ebooks & courses…" },
+  { src: "/hero/ai.jpg", label: "AI", placeholder: "Search AI tools & dev resources…" },
+];
+
+const HERO_ROTATE_MS = 4000;
+
 export default function SitesHomeHero({
   initialQuery = "",
   allWebsites = [],
@@ -57,6 +69,7 @@ export default function SitesHomeHero({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [subtitleIndex, setSubtitleIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
   const wrapRef = useRef(null);
   const inputRef = useRef(null);
   const heroCardRef = useRef(null);
@@ -100,6 +113,44 @@ export default function SitesHomeHero({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  // Auto-rotating background collage (4s), paused on hidden tab and for
+  // reduced-motion users. Only the active frame is mounted; the rest preload.
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return undefined;
+
+    HERO_IMAGES.forEach((image, i) => {
+      if (i === 0) return;
+      const im = new Image();
+      im.src = image.src;
+    });
+
+    let timer = null;
+    const start = () => {
+      if (timer) return;
+      timer = setInterval(() => {
+        setImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+      }, HERO_ROTATE_MS);
+    };
+    const stop = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+    const onVisibility = () => (document.hidden ? stop() : start());
+
+    if (!document.hidden) start();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  const activeImage = HERO_IMAGES[imageIndex];
 
   // Measure hero card height so the left category rail can stick below it
   useEffect(() => {
@@ -246,7 +297,7 @@ export default function SitesHomeHero({
 
   return (
     <section className={`sites-home-hero-v2 ${isOpen && hasSuggestions ? "is-search-active" : ""}`} aria-labelledby="sites-home-title">
-      <div className="sites-hero-atm-card" ref={heroCardRef}>
+      <div className="sites-hero-atm-card sites-hero-on-media" ref={heroCardRef}>
         {/* Border glow wrap & subtle light sweep (System A, Layer 5) */}
         <div className="sites-hero-border-glow-wrap" aria-hidden="true" />
 
@@ -265,7 +316,27 @@ export default function SitesHomeHero({
             aria-hidden="true"
           />
         </div>
-        <div className="sites-hero-inner">
+        {/* Animated media collage — sits above the flat atmosphere, under the copy */}
+        <div className="pointer-events-none absolute inset-0 z-[2] overflow-hidden rounded-[inherit]" aria-hidden="true">
+          <AnimatePresence initial={false}>
+            <motion.img
+              key={activeImage.src}
+              src={activeImage.src}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+              fetchPriority="high"
+              decoding="async"
+            />
+          </AnimatePresence>
+          {/* readability wash */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/45" />
+        </div>
+
+        <div className="sites-hero-inner relative z-10">
           <div className="sites-hero-top">
             <div className="sites-hero-text-col">
               {/* Editorial Eyebrow */}
@@ -295,19 +366,19 @@ export default function SitesHomeHero({
 
             {/* Stat boxes — modern metric tiles */}
             <div className="sites-hero-stats flex items-center gap-2 sm:gap-3" aria-hidden="false">
-              <div className="flex h-16 w-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white transition-colors duration-300 dark:border-white/10 dark:bg-[#0A0A0A]">
-                <span className="mb-1 text-xl font-bold leading-none tabular-nums text-amber-600 dark:text-[#F5A623]">
+              <div className="flex h-16 w-24 flex-col items-center justify-center rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md transition-colors duration-300">
+                <span className="mb-1 text-xl font-bold leading-none tabular-nums text-[#F5A623]">
                   {websiteCount}
                 </span>
-                <span className="text-[9px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-400">
+                <span className="text-[9px] font-medium uppercase tracking-widest text-zinc-400">
                   Sites
                 </span>
               </div>
-              <div className="flex h-16 w-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white transition-colors duration-300 dark:border-white/10 dark:bg-[#0A0A0A]">
-                <span className="mb-1 text-xl font-bold leading-none tabular-nums text-amber-600 dark:text-[#F5A623]">
+              <div className="flex h-16 w-24 flex-col items-center justify-center rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md transition-colors duration-300">
+                <span className="mb-1 text-xl font-bold leading-none tabular-nums text-[#F5A623]">
                   {categoryCount}
                 </span>
-                <span className="text-[9px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-400">
+                <span className="text-[9px] font-medium uppercase tracking-widest text-zinc-400">
                   Categories
                 </span>
               </div>
@@ -317,8 +388,8 @@ export default function SitesHomeHero({
         {/* Search Input with Instant Dropdown */}
         <div className="sites-hero-search-wrap" ref={wrapRef}>
           <form className="sites-hero-search-form" onSubmit={submit} role="search" aria-label={t("search.websites", "Search websites")}>
-            <div className="flex h-12 w-full items-center rounded-2xl border border-slate-200 bg-white px-4 transition-all duration-300 ease-in-out focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/40 dark:border-white/5 dark:bg-[#1A1A1A]">
-              <Search size={18} className="shrink-0 text-slate-400 dark:text-zinc-500" aria-hidden />
+            <div className="flex h-12 w-full items-center rounded-2xl border border-white/15 bg-black/45 px-4 backdrop-blur-md transition-all duration-300 ease-in-out focus-within:border-[#F5A623]/60 focus-within:ring-2 focus-within:ring-amber-500/40">
+              <Search size={18} className="shrink-0 text-zinc-400" aria-hidden />
               <input
                 ref={inputRef}
                 type="search"
@@ -329,20 +400,20 @@ export default function SitesHomeHero({
                 onChange={handleInputChange}
                 onFocus={() => { if (query.trim()) setIsOpen(true); }}
                 onKeyDown={handleKeyDown}
-                placeholder={t("search.heroPlaceholder", "Search websites…")}
+                placeholder={t("search.heroPlaceholder", activeImage.placeholder)}
                 aria-label={t("search.websites", "Search websites")}
                 aria-expanded={isOpen && hasSuggestions}
                 aria-autocomplete="list"
-                className="ml-3 h-full min-w-0 flex-1 border-none bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:text-white dark:placeholder:text-zinc-500"
+                className="ml-3 h-full min-w-0 flex-1 border-none bg-transparent text-sm text-white outline-none placeholder:text-zinc-400"
               />
               {!query && (
-                <kbd className="hidden shrink-0 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 sm:block dark:border-white/10 dark:bg-white/5 dark:text-zinc-500" title="Press / to focus search" aria-hidden="true">/</kbd>
+                <kbd className="hidden shrink-0 rounded-md border border-white/15 bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400 sm:block" title="Press / to focus search" aria-hidden="true">/</kbd>
               )}
               {query && (
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors duration-300 hover:text-slate-900 dark:text-zinc-500 dark:hover:text-white"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-zinc-400 transition-colors duration-300 hover:text-white"
                   aria-label="Clear search"
                 >
                   <X size={15} />
@@ -452,6 +523,19 @@ export default function SitesHomeHero({
         .sites-home-hero-v2:focus-within {
           z-index: var(--stea-z-hero-active, 45);
         }
+        /* Copy must stay readable over the collage in both themes */
+        .sites-hero-on-media .sites-hero-title,
+        .sites-hero-on-media .sites-hero-title-accent {
+          color: #ffffff;
+          text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+        }
+        .sites-hero-on-media .sites-hero-subtitle {
+          color: rgba(255, 255, 255, 0.74);
+        }
+        .sites-hero-on-media .sites-hero-eyebrow {
+          color: #ffb536;
+        }
+
         /* Atmospheric bordered hero card */
         .sites-hero-atm-card {
           --hero-radius: 24px;

@@ -262,21 +262,21 @@ export function WebsiteSolutionCard({
       </div>
 
       {/* ── Bottom row: status dot + tag ── */}
-      <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-white/5">
+      <div className="mt-4 flex w-full min-w-0 items-center justify-between border-t border-slate-100 pt-3 dark:border-white/5">
         {isPremium ? (
-          <span className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-amber-500 dark:text-[#F5A623]">
+          <span className="flex shrink-0 items-center gap-1.5 text-[10px] font-medium text-amber-500 dark:text-[#F5A623]">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-[#F5A623]" aria-hidden="true" />
             Premium
           </span>
         ) : (
-          <span className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+          <span className="flex shrink-0 items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 dark:bg-emerald-400" aria-hidden="true" />
             Free
           </span>
         )}
 
         {footerTag ? (
-          <span className="truncate text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+          <span className="ml-2 min-w-0 truncate text-right text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
             {footerTag}
           </span>
         ) : null}

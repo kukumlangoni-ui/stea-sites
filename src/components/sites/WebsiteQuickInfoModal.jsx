@@ -168,7 +168,7 @@ export default function WebsiteQuickInfoModal({
 
       <div
         className={[
-          "relative z-10 flex max-h-[90vh] w-full max-w-md flex-col overflow-y-auto",
+          "relative z-10 flex max-h-[90vh] w-full flex-col overflow-y-auto sm:max-w-md",
           "rounded-t-3xl border-t border-white/10 bg-[#1C1C1E] px-6 pt-6",
           /* keep the primary button clear of the home indicator */
           "pb-[calc(2.5rem+env(safe-area-inset-bottom))]",

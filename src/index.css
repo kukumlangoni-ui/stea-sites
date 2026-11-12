@@ -21,6 +21,16 @@
 
 /* Reset */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Form-control baseline — the app reset above never touched <button>,
+   so UA chrome (2px outset border + gray fill) leaked through Tailwind cards */
+button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
 body, html, #root {
   background: #05060a;
   color: #ffffff;

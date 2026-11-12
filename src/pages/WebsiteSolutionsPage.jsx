@@ -567,7 +567,7 @@ function SitesV2Shell({ seo, user, isReady, progress = 0, onSignIn, children, fi
           font-variant-numeric: tabular-nums;
         }
         .sites-v2-page {
-          padding-top: 56px;
+          padding-top: 64px;
           overflow: visible;
         }
         .sites-v2-main {

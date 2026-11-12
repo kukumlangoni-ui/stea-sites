@@ -198,7 +198,7 @@ function SitesCategoryNavRail({
         .sites-category-mobile-nav {
           display: none;
           position: sticky;
-          top: 56px;
+          top: 64px;
           z-index: var(--stea-z-rail, 40);
           background: color-mix(in srgb, var(--stea-page) 96%, transparent);
           backdrop-filter: saturate(180%) blur(20px);

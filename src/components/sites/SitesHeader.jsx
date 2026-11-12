@@ -1,63 +1,12 @@
 import { useState, memo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { CircleUser, Check, ChevronDown, Download, Sun, Moon } from "lucide-react";
-import { TOKENS } from "./tokens.js";
-import { useSitesLanguage, SUPPORTED_LANGUAGES } from "../../i18n/index.js";
+import { Download, Sun, Moon } from "lucide-react";
+import { useSitesLanguage } from "../../i18n/index.js";
 import { usePWA } from "../../contexts/PWAContext.jsx";
 import { useSettings } from "../../contexts/SettingsContext.jsx";
 import SitesMemberMenu from "./SitesMemberMenu.jsx";
 
 const LOGO = "/stea-www-globe.png"; // Official STEA logo
-
-const LANG_SHORT = {
-  en: "EN",
-  sw: "SW",
-  zh: "中文",
-};
-
-const LANG_LABEL = {
-  en: "English",
-  sw: "Swahili",
-  zh: "Simplified Chinese",
-};
-
-function LanguageChip() {
-  const { currentLang, changeLanguage } = useSitesLanguage();
-  const [open, setOpen] = useState(false);
-
-  const displayKey = currentLang === 'en' ? 'en' : currentLang === 'zh' ? 'zh' : currentLang === 'sw' ? 'sw' : 'en';
-
-  return (
-    <div className="sites-lang-chip-wrap" onMouseLeave={() => setOpen(false)}>
-      <button 
-        type="button"
-        className="flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-200/70 dark:bg-white/10 dark:text-zinc-300 dark:hover:bg-white/15"
-        onClick={() => setOpen(!open)}
-        aria-label="Change Language"
-        title="Change Language"
-      >
-        <span>{LANG_SHORT[displayKey] || "EN"}</span>
-        <ChevronDown size={11} strokeWidth={2.5} className="opacity-70" />
-      </button>
-      {open && (
-        <ul className="sites-lang-menu">
-          {["en", "sw", "zh"].map((k) => (
-            <li key={k}>
-              <button
-                type="button"
-                className={`sites-lang-option ${displayKey === k ? "is-selected" : ""}`}
-                onClick={() => { changeLanguage(k); setOpen(false); }}
-              >
-                <span>{LANG_LABEL[k]}</span>
-                {displayKey === k && <Check size={12} />}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
 
 function HeaderInstallButton() {
   const { deferredPrompt, isInstalled } = usePWA();
@@ -65,15 +14,15 @@ function HeaderInstallButton() {
   if (isInstalled || !deferredPrompt) return null;
 
   return (
-    <button 
+    <button
       type="button"
-      className="sites-header-install-btn"
+      className="hidden h-8 shrink-0 items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 text-xs font-bold text-amber-600 transition-colors duration-200 hover:border-amber-500/60 hover:bg-amber-500/20 dark:text-[#F5A623] md:inline-flex"
       onClick={() => deferredPrompt.prompt()}
       aria-label={t("nav.installApp", "Install App")}
       title={t("nav.installApp", "Install App")}
     >
       <Download size={13} strokeWidth={2.5} />
-      <span className="sites-header-install-text">{t("nav.installApp", "Install App")}</span>
+      <span>{t("nav.installApp", "Install App")}</span>
     </button>
   );
 }
@@ -91,44 +40,63 @@ function AccountButton({ user, onSignIn }) {
     setClicked(true);
     setTimeout(() => setClicked(false), 500);
     if (onSignIn) onSignIn();
-    else window.dispatchEvent(new CustomEvent('open-auth'));
+    else window.dispatchEvent(new CustomEvent("open-auth"));
   };
 
   return (
     <button
       type="button"
-      className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 ease-in-out hover:scale-105 hover:bg-slate-800 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+      className={[
+        "flex h-10 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-5 text-sm font-bold tracking-tight",
+        "bg-slate-900 text-white",
+        "shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_4px_12px_rgba(15,23,42,0.25)]",
+        "dark:bg-white dark:text-black",
+        "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(0,0,0,0.1),0_4px_12px_rgba(255,255,255,0.15)]",
+        "transition-transform duration-200 ease-out hover:scale-105 active:scale-95",
+      ].join(" ")}
       onClick={handleClick}
       aria-label={t("nav.signIn", "Sign In")}
       title={t("nav.signIn", "Sign In")}
     >
-            {t("nav.becomeMember", "Become a Member")}
+      {t("nav.becomeMember", "Become a Member")}
     </button>
   );
 }
 
 function ThemeToggle() {
   const { theme, setTheme } = useSettings();
-  // We need to know actual rendered mode if it's 'system'
+  // We need to know the rendered mode if it's 'system'
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    if (theme === 'light') setIsDark(false);
-    else if (theme === 'dark') setIsDark(true);
+    if (theme === "light") setIsDark(false);
+    else if (theme === "dark") setIsDark(true);
     else {
-      setIsDark(!(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches));
+      setIsDark(
+        !(
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: light)").matches
+        )
+      );
     }
   }, [theme]);
 
   return (
     <button
       type="button"
-      className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition-colors duration-200 hover:bg-slate-200/70 dark:bg-white/10 dark:text-zinc-300 dark:hover:bg-white/15"
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      className={[
+        "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+        "border border-slate-300 bg-slate-100 text-slate-600",
+        "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(15,23,42,0.12)]",
+        "dark:border-white/10 dark:bg-[#1C1C1E] dark:text-zinc-400",
+        "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_2px_4px_rgba(0,0,0,0.5)]",
+        "transition-colors duration-200 hover:text-slate-900 dark:hover:text-white",
+      ].join(" ")}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label="Toggle theme"
       title="Toggle theme"
     >
-      {isDark ? <Sun size={15} strokeWidth={2.5} /> : <Moon size={15} strokeWidth={2.5} />}
+      {isDark ? <Sun size={18} strokeWidth={2.2} /> : <Moon size={18} strokeWidth={2.2} />}
     </button>
   );
 }
@@ -137,173 +105,49 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
   const { t } = useSitesLanguage();
 
   return (
-    <header className="sites-header-v2" role="banner">
-      <div className="sites-header-v2-inner">
-        <Link
-          to="/"
-          className="sites-brand-v2"
-          aria-label="STEA Home"
-        >
+    <header
+      role="banner"
+      className={[
+        /* fixed 64px bar — page content is offset by 64px in the page styles */
+        "fixed inset-x-0 top-0 z-[1000] flex h-16 w-full items-center justify-between gap-3",
+        "border-b border-slate-200/70 px-4 md:px-6",
+        /* iOS glass */
+        "bg-white/80 backdrop-blur-2xl",
+        "dark:border-white/10 dark:bg-black/60",
+        "shadow-[0_1px_0_rgba(15,23,42,0.04)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.5)]",
+        "transition-colors duration-300",
+      ].join(" ")}
+    >
+      {/* ── Brand: 3D gold/black icon tile + wordmark ── */}
+      <Link
+        to="/"
+        className="flex shrink-0 items-center gap-2.5 text-slate-900 no-underline dark:text-white"
+        aria-label="STEA Home"
+      >
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-[#111] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_6px_rgba(0,0,0,0.35)]">
           <img
             src={LOGO}
             alt="STEA logo"
-            className="sites-brand-v2-logo"
-            width="32"
-            height="32"
+            className="h-6 w-6 object-contain"
+            width="24"
+            height="24"
             loading="eager"
             decoding="sync"
             fetchPriority="high"
           />
-          <span className="sites-brand-v2-text">STEA</span>
-        </Link>
+        </span>
+        <span className="text-[18px] font-bold tracking-tight">STEA</span>
+      </Link>
 
-        <div className="sites-header-v2-right" aria-label={t("nav.headerActions", "Header actions")}>
-          <HeaderInstallButton />
-          <LanguageChip />
-          <ThemeToggle />
-          <AccountButton user={user} onSignIn={onSignIn} />
-        </div>
+      {/* ── Actions: install (desktop) · theme · member. No language switcher. ── */}
+      <div
+        className="flex min-w-0 items-center gap-2 md:gap-3"
+        aria-label={t("nav.headerActions", "Header actions")}
+      >
+        <HeaderInstallButton />
+        <ThemeToggle />
+        <AccountButton user={user} onSignIn={onSignIn} />
       </div>
-
-      <style>{`
-        .sites-header-v2 {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          width: 100%;
-          height: 56px;
-          flex-shrink: 0;
-          z-index: 1000;
-          background: var(--stea-header-bg);
-          backdrop-filter: saturate(180%) blur(20px);
-          -webkit-backdrop-filter: saturate(180%) blur(20px);
-          border-bottom: 1px solid var(--stea-header-border);
-          box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 4px 16px -8px rgba(15, 23, 42, 0.10);
-          transition: background-color 300ms ease-in-out,
-                      border-color 300ms ease-in-out,
-                      box-shadow 300ms ease-in-out;
-          overflow: visible;
-        }
-
-        .sites-header-v2-inner {
-          max-width: 1440px;
-          height: 100%;
-          margin: 0 auto;
-          padding: 0 16px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-        }
-
-        .sites-brand-v2 {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          text-decoration: none;
-          color: var(--stea-text);
-          flex-shrink: 0;
-        }
-
-        .sites-brand-v2-logo {
-          width: 26px;
-          height: 26px;
-          border-radius: 0; background: transparent;
-          display: block;
-          object-fit: contain;
-        }
-
-        .sites-brand-v2-text {
-          font-family: "'Bricolage Grotesque', 'Instrument Sans', system-ui, -apple-system, sans-serif";
-          font-size: 18px;
-          font-weight: 700;
-          letter-spacing: -0.025em;
-          color: var(--stea-text);
-        }
-
-        .sites-header-v2-right {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-shrink: 0;
-        }
-
-        .sites-header-install-btn {
-          appearance: none;
-          border: 1px solid color-mix(in srgb, var(--stea-gold) 28%, var(--stea-border));
-          background: color-mix(in srgb, var(--stea-gold) 10%, transparent);
-          color: var(--stea-gold-hi);
-          border-radius: 999px;
-          padding: 5px 12px;
-          font: inherit;
-          font-size: 12px;
-          font-weight: 750;
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          cursor: pointer;
-          transition: background 140ms ease, border-color 140ms ease;
-        }
-        .sites-header-install-btn:hover {
-          background: color-mix(in srgb, var(--stea-gold) 20%, transparent);
-          border-color: var(--stea-gold);
-        }
-
-
-        .sites-lang-chip-wrap {
-          position: relative;
-        }
-
-
-        .sites-lang-menu {
-          position: absolute;
-          top: calc(100% + 6px);
-          right: 0;
-          min-width: 130px;
-          background: var(--stea-panel2);
-          border: 1px solid var(--stea-border-hi);
-          border-radius: 10px;
-          padding: 4px;
-          list-style: none;
-          margin: 0;
-          z-index: var(--stea-z-toast, 80);
-          box-shadow: 0 12px 28px rgba(0,0,0,0.5);
-        }
-
-        .sites-lang-option {
-          appearance: none;
-          background: transparent;
-          border: 0;
-          width: 100%;
-          text-align: left;
-          padding: 6px 8px;
-          border-radius: 6px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font: inherit;
-          font-size: 12px;
-          color: var(--stea-text2);
-          cursor: pointer;
-        }
-        .sites-lang-option:hover {
-          background: rgba(255,255,255,0.06);
-          color: var(--stea-text);
-        }
-        .sites-lang-option.is-selected {
-          color: var(--stea-gold-hi);
-          font-weight: 750;
-        }
-
-
-        /* Native-app feel: no Install CTA on phones, it belongs to desktop */
-        @media (max-width: 767px) {
-          .sites-header-install-btn {
-            display: none !important;
-          }
-        }
-      `}</style>
     </header>
   );
 }

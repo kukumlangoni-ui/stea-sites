@@ -51,6 +51,12 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
 
   useEffect(() => {
     if (!mounted) return;
+    document.documentElement.classList.add("stea-modal-open");
+    return () => document.documentElement.classList.remove("stea-modal-open");
+  }, [mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
     const onKey = (e) => { if (e.key === "Escape" && !loading) handleClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

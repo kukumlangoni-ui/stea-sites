@@ -2971,3 +2971,11 @@ body,
 /* Scrollbars follow theme instead of staying black */
 html.dark      { scrollbar-color: #2A2F3A transparent; }
 html.light-mode { scrollbar-color: #CBD5E1 transparent; }
+
+/* Chromium paints a fixed overlay inside the header's backdrop root when the
+   header keeps a backdrop-filter, which clips the modal to the 64px bar.
+   While any modal is open we drop the header blur so overlays composite full-screen. */
+html.stea-modal-open header[role="banner"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}

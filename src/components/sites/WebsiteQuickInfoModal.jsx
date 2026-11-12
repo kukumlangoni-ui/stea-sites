@@ -56,6 +56,12 @@ export default function WebsiteQuickInfoModal({
 
   useEffect(() => {
     if (!site) return undefined;
+    document.documentElement.classList.add("stea-modal-open");
+    return () => document.documentElement.classList.remove("stea-modal-open");
+  }, [site]);
+
+  useEffect(() => {
+    if (!site) return undefined;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {

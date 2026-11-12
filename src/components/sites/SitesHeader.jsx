@@ -31,13 +31,13 @@ function LanguageChip() {
     <div className="sites-lang-chip-wrap" onMouseLeave={() => setOpen(false)}>
       <button 
         type="button"
-        className="sites-lang-chip"
+        className="flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors duration-200 hover:bg-slate-200/70 dark:bg-white/10 dark:text-zinc-300 dark:hover:bg-white/15"
         onClick={() => setOpen(!open)}
         aria-label="Change Language"
         title="Change Language"
       >
         <span>{LANG_SHORT[displayKey] || "EN"}</span>
-        <ChevronDown size={11} strokeWidth={2.5} style={{ opacity: 0.7 }} />
+        <ChevronDown size={11} strokeWidth={2.5} className="opacity-70" />
       </button>
       {open && (
         <ul className="sites-lang-menu">
@@ -97,28 +97,12 @@ function AccountButton({ user, onSignIn }) {
   return (
     <button
       type="button"
-      className="sites-account-btn"
+      className="rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 ease-in-out hover:scale-105 hover:bg-slate-800 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
       onClick={handleClick}
       aria-label={t("nav.signIn", "Sign In")}
       title={t("nav.signIn", "Sign In")}
-      style={{
-        display: "flex", alignItems: "center", gap: 6,
-        background: "rgba(255,255,255,0.06)", border: `1px solid var(--stea-border)`,
-        borderRadius: 999, padding: "5px 12px",
-        cursor: "pointer", color: "var(--stea-text)",
-        fontFamily: "inherit", fontSize: 13, fontWeight: 700,
-        transition: "background 0.15s, border-color 0.15s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-        e.currentTarget.style.borderColor = "var(--stea-border-hi)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-        e.currentTarget.style.borderColor = "var(--stea-border)";
-      }}
     >
-      <span>{t("nav.becomeMember", "Become a Member")}</span>
+            {t("nav.becomeMember", "Become a Member")}
     </button>
   );
 }
@@ -139,7 +123,7 @@ function ThemeToggle() {
   return (
     <button
       type="button"
-      className="sites-theme-btn"
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition-colors duration-200 hover:bg-slate-200/70 dark:bg-white/10 dark:text-zinc-300 dark:hover:bg-white/15"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label="Toggle theme"
       title="Toggle theme"
@@ -195,15 +179,18 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
           backdrop-filter: saturate(180%) blur(20px);
           -webkit-backdrop-filter: saturate(180%) blur(20px);
           border-bottom: 1px solid var(--stea-header-border);
+          box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 4px 16px -8px rgba(15, 23, 42, 0.10);
           transition: background-color 300ms ease-in-out,
-                      border-color 300ms ease-in-out;
+                      border-color 300ms ease-in-out,
+                      box-shadow 300ms ease-in-out;
           overflow: visible;
         }
 
         .sites-header-v2-inner {
           max-width: 1440px;
+          height: 100%;
           margin: 0 auto;
-          padding: 6px 16px;
+          padding: 0 16px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -229,16 +216,16 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
 
         .sites-brand-v2-text {
           font-family: "'Bricolage Grotesque', 'Instrument Sans', system-ui, -apple-system, sans-serif";
-          font-size: 19px;
-          font-weight: 850;
-          letter-spacing: -0.02em;
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: -0.025em;
           color: var(--stea-text);
         }
 
         .sites-header-v2-right {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           flex-shrink: 0;
         }
 
@@ -263,52 +250,11 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
           border-color: var(--stea-gold);
         }
 
-        .sites-theme-btn {
-          appearance: none;
-          background: transparent;
-          border: 1px solid var(--stea-border);
-          color: var(--stea-text2);
-          border-radius: 999px;
-          width: 28px;
-          height: 28px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
-        }
-        .sites-theme-btn:hover {
-          color: var(--stea-text);
-          background: var(--stea-panel);
-          border-color: var(--stea-border-hi);
-        }
 
         .sites-lang-chip-wrap {
           position: relative;
         }
 
-        .sites-lang-chip {
-          appearance: none;
-          background: var(--stea-panel);
-          border: 1px solid var(--stea-border);
-          color: var(--stea-text2);
-          border-radius: 999px;
-          padding: 5px 9px;
-          font: inherit;
-          font-size: 11.5px;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          cursor: pointer;
-          transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
-        }
-        .sites-lang-chip:hover {
-          border-color: var(--stea-border-hi);
-          color: var(--stea-text);
-          background: var(--stea-panel2);
-        }
 
         .sites-lang-menu {
           position: absolute;
@@ -350,9 +296,6 @@ function SitesHeader({ user, onSignIn, onSignOut }) {
           font-weight: 750;
         }
 
-        .sites-account-btn span {
-          color: var(--stea-text);
-        }
 
         /* Native-app feel: no Install CTA on phones, it belongs to desktop */
         @media (max-width: 767px) {

@@ -24,15 +24,15 @@ export default function SitesMobileTabBar({ user, onProfileGate } = {}) {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/85 backdrop-blur-xl lg:hidden dark:border-white/10 dark:bg-black/80"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/80 px-2 pt-2 backdrop-blur-xl lg:hidden shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-black/80 dark:shadow-none"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex h-14 items-center justify-around px-2 pt-2">
+      <div className="flex h-14 items-center justify-around">
         {TABS.map(({ to, label, Icon, isActive }) => {
           const active = isActive(pathname);
-          const cls = `flex flex-col items-center gap-1 transition-colors duration-200 ${
+          const cls = `no-underline flex flex-col items-center justify-center gap-1 transition-colors duration-200 ${
             active
-              ? "text-amber-500 dark:text-[#F5A623]"
+              ? "text-[#F5A623]"
               : "text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
           }`;
 
@@ -47,7 +47,7 @@ export default function SitesMobileTabBar({ user, onProfileGate } = {}) {
                 aria-label="Profile"
               >
                 <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
-                <span className="text-[10px] font-medium">{label}</span>
+                <span className={`text-[10px] ${active ? "font-bold" : "font-medium"}`}>{label}</span>
               </button>
             );
           }
@@ -55,14 +55,14 @@ export default function SitesMobileTabBar({ user, onProfileGate } = {}) {
           return (
             <Link key={to} to={to} aria-current={active ? "page" : undefined} className={cls}>
               <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
-              <span className="text-[10px] font-medium">{label}</span>
+              <span className={`text-[10px] ${active ? "font-bold" : "font-medium"}`}>{label}</span>
             </Link>
           );
         })}
       </div>
 
       {/* iOS home indicator */}
-      <div className="mx-auto mb-1 mt-2 h-1 w-32 rounded-full bg-slate-900/80 dark:bg-white" />
+      <div className="mx-auto mb-1 mt-2 h-1 w-32 rounded-full bg-slate-900 dark:bg-white" />
     </nav>
   );
 }

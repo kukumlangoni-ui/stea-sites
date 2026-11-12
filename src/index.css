@@ -2929,8 +2929,8 @@ html.light-mode,
   --stea-danger:     #DC2626;
   --stea-success:    #059669;
 
-  --stea-header-bg:     rgba(255, 255, 255, 0.75);
-  --stea-header-border: rgba(15, 23, 42, 0.06);
+  --stea-header-bg:     rgba(255, 255, 255, 0.70);
+  --stea-header-border: rgba(226, 232, 240, 0.50);
 
   --stea-hero-surface: #FFFFFF;
   --stea-hero-glow:    rgba(245, 166, 35, 0.05);

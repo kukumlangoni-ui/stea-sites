@@ -259,6 +259,7 @@ function SitesCategoryNavRail({
           border-color: var(--stea-gold);
           color: #000000;
           font-weight: 600;
+          box-shadow: 0 4px 14px -4px rgba(245, 166, 35, 0.45);
         }
 
         .sites-category-mobile-pill.is-active svg {

@@ -122,7 +122,29 @@ export function WebsiteSolutionCard({
     site.isPaid ?? site.paid ?? site.isPremium ?? site.premium ?? isTrusted
   );
 
-  const footerTag = String(site.quality || site.category || site.tag || "").trim();
+  // Short right-hand footer tag: explicit quality/tag wins, then a compact
+  // label for the category (full category names are far too long for a 205px card).
+  const SHORT_TAGS = {
+    "movies & tv shows": "Streaming",
+    "live sports": "Sports",
+    "ebooks": "Books",
+    "ai tools": "AI",
+    "automation": "Auto",
+    "design": "Design",
+    "developer tools": "Dev",
+    "music": "Music",
+    "news": "News",
+    "education": "Learn",
+    "productivity": "Prod",
+    "social": "Social",
+    "shopping": "Shop",
+    "finance": "Finance",
+    "gaming": "Gaming",
+  };
+  const rawTag = String(site.quality || site.tag || site.category || "").trim();
+  const footerTag =
+    SHORT_TAGS[rawTag.toLowerCase()] ||
+    (rawTag ? rawTag.split(/[\s&]+/)[0].slice(0, 10) : "");
 
   const openDetails = () => {
     if (onDetails || onSelect) {

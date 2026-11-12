@@ -579,7 +579,7 @@ function SitesV2Shell({ seo, user, isReady, progress = 0, onSignIn, children, fi
         }
         /* the iOS tab bar owns the bottom ~72px on phones */
         @media (max-width: 1023px) {
-          .sites-v2-main { padding-bottom: 104px; }
+          .sites-v2-main { padding-bottom: 112px; }
         }
         @media (min-width: 640px) {
           .sites-v2-main { padding: 0 24px 64px; }   /* sm:px-6 */

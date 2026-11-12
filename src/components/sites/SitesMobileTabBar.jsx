@@ -1,9 +1,12 @@
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Compass, LayoutGrid, Star, User } from "lucide-react";
 
 /**
- * Native-iOS bottom bar. Mobile only (hidden from lg up, where the sidebar
- * rail takes over navigation). Routes map 1:1 to real pages — no dead tabs.
+ * Floating iOS-style tab bar.
+ * A glass pill with a magnetic amber dot that slides under the active tab.
+ * The dot auto-cycles until the user touches the screen, then it sticks to the
+ * real route for good.
  */
 const TABS = [
   { to: "/", label: "Discover", Icon: Compass, isActive: (p) => p === "/" },
@@ -17,52 +20,148 @@ const TABS = [
   { to: "/profile", label: "Profile", Icon: User, isActive: (p) => p.startsWith("/profile") },
 ];
 
+const DOT_SIZE = 42;
+const AUTOPLAY_MS = 2600;
+
 export default function SitesMobileTabBar({ user, onProfileGate } = {}) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  const trackRef = useRef(null);
+  const tabRefs = useRef([]);
+
+  const [autoplay, setAutoplay] = useState(true);
+  const [autoIndex, setAutoIndex] = useState(0);
+  const [dotX, setDotX] = useState(null);
+
+  const routeIndex = Math.max(0, TABS.findIndex((tab) => tab.isActive(pathname)));
+  const index = autoplay ? autoIndex : routeIndex;
+
+  /* ── place the dot exactly under the current tab ───────────────────────── */
+  const placeDot = useCallback(() => {
+    const track = trackRef.current;
+    const tab = tabRefs.current[index];
+    if (!track || !tab) return;
+    const trackBox = track.getBoundingClientRect();
+    const tabBox = tab.getBoundingClientRect();
+    const center = tabBox.left - trackBox.left + tabBox.width / 2;
+    setDotX(center - DOT_SIZE / 2);
+  }, [index]);
+
+  useLayoutEffect(() => {
+    placeDot();
+    const track = trackRef.current;
+    window.addEventListener("resize", placeDot);
+    let observer;
+    if (track && typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(placeDot);
+      observer.observe(track);
+    }
+    return () => {
+      window.removeEventListener("resize", placeDot);
+      if (observer) observer.disconnect();
+    };
+  }, [placeDot]);
+
+  /* ── autoplay: cycles the dot, dies on first human touch ───────────────── */
+  useEffect(() => {
+    if (!autoplay) return;
+    const timer = setInterval(() => setAutoIndex((i) => (i + 1) % TABS.length), AUTOPLAY_MS);
+    const stop = () => setAutoplay(false);
+
+    window.addEventListener("pointerdown", stop, { passive: true });
+    window.addEventListener("touchstart", stop, { passive: true });
+    window.addEventListener("wheel", stop, { passive: true });
+    window.addEventListener("keydown", stop);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("pointerdown", stop);
+      window.removeEventListener("touchstart", stop);
+      window.removeEventListener("wheel", stop);
+      window.removeEventListener("keydown", stop);
+    };
+  }, [autoplay]);
+
+  const tabClass = (isDotTab) =>
+    [
+      "relative z-10 flex h-full flex-1 items-center justify-center rounded-full no-underline",
+      "transition-transform duration-300 ease-out",
+      isDotTab ? "scale-[1.06] text-white" : "text-slate-500 dark:text-zinc-400",
+    ].join(" ");
+
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/80 px-2 pt-2 backdrop-blur-xl lg:hidden shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-black/80 dark:shadow-none"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed left-1/2 z-50 h-[58px] w-[min(94vw,340px)] -translate-x-1/2 rounded-full lg:hidden
+                 border border-slate-300/30 bg-white/70 shadow-[0_14px_28px_-10px_rgba(0,0,0,0.28)] backdrop-blur-xl
+                 dark:border-white/10 dark:bg-[#151515]/80 dark:shadow-[0_14px_28px_-10px_rgba(0,0,0,0.8)]"
+      style={{ bottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
     >
-      <div className="flex h-14 items-center justify-around">
-        {TABS.map(({ to, label, Icon, isActive }) => {
-          const active = isActive(pathname);
-          const cls = `no-underline flex flex-col items-center justify-center gap-1 transition-colors duration-200 ${
-            active
-              ? "text-[#F5A623]"
-              : "text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
-          }`;
+      <div ref={trackRef} className="relative flex h-full w-full items-center px-1.5">
+        {/* magnetic amber dot */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 z-0 rounded-full"
+          style={{
+            width: DOT_SIZE,
+            height: DOT_SIZE,
+            top: "50%",
+            transform: `translateX(${dotX || 0}px) translateY(-50%)`,
+            opacity: dotX === null ? 0 : 1,
+            background: "linear-gradient(180deg, #FFD078, #F5A623)",
+            boxShadow:
+              "inset 0 1.5px 1px rgba(255,255,255,0.4), 0 8px 14px -4px rgba(245,166,35,0.5)",
+            transition: "transform 0.55s cubic-bezier(0.3, 1.35, 0.4, 1), opacity 200ms ease",
+            willChange: "transform",
+          }}
+        />
 
-          // Profile is gated: guests get the member sheet instead of a dead route
+        {TABS.map(({ to, label, Icon }, i) => {
+          const isDotTab = i === index;
+          const isRouteTab = i === routeIndex;
+
           if (to === "/profile") {
             return (
               <button
                 key={to}
+                ref={(el) => {
+                  tabRefs.current[i] = el;
+                }}
                 type="button"
-                onClick={() => (user ? navigate("/profile") : onProfileGate && onProfileGate())}
-                className={cls}
-                aria-label="Profile"
+                aria-label={label}
+                title={label}
+                aria-current={isRouteTab ? "page" : undefined}
+                onClick={() => {
+                  setAutoplay(false);
+                  if (user) navigate("/profile");
+                  else if (onProfileGate) onProfileGate();
+                }}
+                className={tabClass(isDotTab)}
               >
-                <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
-                <span className={`text-[10px] ${active ? "font-bold" : "font-medium"}`}>{label}</span>
+                <Icon size={22} strokeWidth={2} aria-hidden="true" />
               </button>
             );
           }
 
           return (
-            <Link key={to} to={to} aria-current={active ? "page" : undefined} className={cls}>
-              <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
-              <span className={`text-[10px] ${active ? "font-bold" : "font-medium"}`}>{label}</span>
+            <Link
+              key={to}
+              ref={(el) => {
+                tabRefs.current[i] = el;
+              }}
+              to={to}
+              aria-label={label}
+              title={label}
+              aria-current={isRouteTab ? "page" : undefined}
+              onClick={() => setAutoplay(false)}
+              className={tabClass(isDotTab)}
+            >
+              <Icon size={22} strokeWidth={2} aria-hidden="true" />
             </Link>
           );
         })}
       </div>
-
-      {/* iOS home indicator */}
-      <div className="mx-auto mb-1 mt-2 h-1 w-32 rounded-full bg-slate-900 dark:bg-white" />
     </nav>
   );
 }

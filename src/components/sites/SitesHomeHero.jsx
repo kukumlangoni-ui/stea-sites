@@ -521,7 +521,7 @@ export default function SitesHomeHero({
           color: ${TOKENS.text};
         }
         .sites-hero-title-accent {
-          color: ${TOKENS.gold};
+          color: inherit;
         }
         /* Task 1: Rotating Dynamic Subtitle Container - Zero Layout Shift CSS Grid */
         .sites-hero-subtitle-container {

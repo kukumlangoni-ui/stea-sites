@@ -13,9 +13,16 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import SteaLogo from "./SteaGlobeMark.jsx";
+import { useSettings } from "../../contexts/SettingsContext.jsx";
 
 
 function SitesMemberAuthModal({ open = true, onClose, onUser }) {
+  const { theme } = useSettings();
+  const isLight =
+    theme === "light" ||
+    (theme === "system" &&
+      typeof window !== "undefined" &&
+      !window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [mounted, setMounted] = useState(Boolean(open));
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState("login"); // login | register | forgot
@@ -230,6 +237,17 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
   if (!mounted) return null;
 
   const fieldClass = "stea-auth-field";
+  const fieldStyle = {
+    background: isLight ? "#f8fafc" : "#0A0A0A",
+    borderColor: isLight ? "#e2e8f0" : "rgba(255,255,255,0.10)",
+    color: isLight ? "#0f172a" : "#ffffff",
+    "--stea-ph": isLight ? "#94a3b8" : "#52525b",
+  };
+  const googleStyle = {
+    background: isLight ? "#ffffff" : "transparent",
+    borderColor: isLight ? "#e2e8f0" : "rgba(255,255,255,0.10)",
+    color: isLight ? "#0f172a" : "#ffffff",
+  };
 
   const labelClass = "mb-1.5 block text-xs font-bold text-slate-700 dark:text-zinc-300";
 
@@ -346,6 +364,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={fieldClass}
+                style={fieldStyle}
                 autoComplete="email"
               />
             </div>
@@ -373,9 +392,10 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
               onClick={handleGoogle}
               disabled={loading}
               className={[
-                "stea-auth-google mt-1 flex h-12 w-full items-center justify-center gap-3 rounded-xl text-sm font-semibold transition-opacity",
+                "stea-auth-google mt-1 flex h-12 w-full items-center justify-center gap-3 text-sm font-semibold transition-opacity",
                 loading ? "cursor-not-allowed opacity-60" : "",
               ].join(" ")}
+              style={googleStyle}
             >
               {loading ? (
                 <span>Connecting to Google…</span>
@@ -410,6 +430,8 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={fieldClass}
+                  style={fieldStyle}
+                style={fieldStyle}
                   autoComplete="name"
                 />
               </div>
@@ -425,6 +447,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={fieldClass}
+                style={fieldStyle}
                 autoComplete="email"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -442,6 +465,7 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`${fieldClass} !pr-11`}
+                  style={fieldStyle}
                   autoComplete={mode === "login" ? "current-password" : "new-password"}
                   onKeyDown={(e) => { if (e.key === "Enter" && mode === "login") handleEmailAuth(); }}
                 />
@@ -467,6 +491,8 @@ function SitesMemberAuthModal({ open = true, onClose, onUser }) {
                   value={confirmPw}
                   onChange={(e) => setConfirmPw(e.target.value)}
                   className={fieldClass}
+                  style={fieldStyle}
+                style={fieldStyle}
                   autoComplete="new-password"
                   onKeyDown={(e) => { if (e.key === "Enter") handleEmailAuth(); }}
                 />

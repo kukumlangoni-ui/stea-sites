@@ -1,3 +1,8 @@
+# Root document — always revalidate so a domain switch can never pin an old build
+/
+  Cache-Control: public, max-age=0, s-maxage=20, stale-while-revalidate=60, must-revalidate
+  X-Content-Type-Options: nosniff
+
 # HTML — allow edge caching with revalidation
 /index.html
   Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=86400

@@ -1,101 +1,78 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { X, Flame, Shield, Lock, ChevronRight } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ShieldAlert, X } from "lucide-react";
+
+const VISIBLE_MS = 5000;
 
 /**
- * Detailed ad-blocker / VPN notice.
- * Premium iOS card: soft indigo glow, pill actions, tight type scale.
- * `isAfterDark` is kept for backwards compatibility with older callers.
+ * Thin iOS-style security notification.
+ * Floats under the header (fixed, so it never pushes content), slides in,
+ * then dismisses itself after five seconds or on tap of the close control.
  */
 export default function AdBlockerProtectionBanner() {
-  const [dismissed, setDismissed] = useState(false);
-  if (dismissed) return null;
+  const [isVisible, setIsVisible] = useState(true);
+  const timerRef = useRef(null);
 
-  const pill =
-    "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold transition-colors duration-200";
+  const dismiss = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setIsVisible(false);
+  };
+
+  useEffect(() => {
+    if (!isVisible) return undefined;
+    timerRef.current = setTimeout(() => {
+      timerRef.current = null;
+      setIsVisible(false);
+    }, VISIBLE_MS);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [isVisible]);
 
   return (
-    <div
-      role="region"
-      aria-label="AdBlocker recommendation"
-      className={[
-        "relative mx-auto my-4 w-full max-w-2xl overflow-hidden rounded-2xl border p-4 sm:p-5",
-        "border-slate-200 bg-white shadow-sm",
-        "dark:border-white/10 dark:bg-[#151515] dark:shadow-lg",
-        "transition-all duration-300",
-      ].join(" ")}
-    >
-      {/* soft indigo bloom, clipped by the card */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-transparent to-transparent"
-      />
-
-      <div className="relative z-10">
-        <div className="mb-3 flex items-center gap-2 pr-9 text-sm font-bold text-slate-900 dark:text-white">
-          <span aria-hidden="true">🛡️</span>
-          <span>Before clicking any link!!!</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-zinc-400">
-          <span>Use</span>
-          <a
-            href="https://brave.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${pill} border-orange-500/20 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 dark:text-orange-400`}
-          >
-            <Flame size={13} strokeWidth={2.5} aria-hidden="true" />
-            Brave
-          </a>
-          <span>or</span>
-          <a
-            href="https://ublockorigin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${pill} border-red-500/20 bg-red-500/10 text-red-600 hover:bg-red-500/20 dark:text-red-400`}
-          >
-            <Shield size={13} strokeWidth={2.5} aria-hidden="true" />
-            uBlock Origin
-          </a>
-          <span>or</span>
-          <a
-            href="https://protonvpn.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${pill} border-indigo-500/20 bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20 dark:text-indigo-400`}
-          >
-            <Lock size={13} strokeWidth={2.5} aria-hidden="true" />
-            Proton VPN
-          </a>
-        </div>
-
-        <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-slate-500 dark:text-zinc-500">
-            to stop unwanted popups, ads, and bypass network blocks.
-          </p>
-          <Link
-            to="/websites/after-dark"
+    <div className="pointer-events-none fixed inset-x-0 top-20 z-[100] flex justify-center px-4">
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            key="stea-adblock-toast"
+            role="status"
+            aria-live="polite"
+            aria-label="AdBlocker recommendation"
+            initial={{ y: -14, opacity: 0, scale: 0.98 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: -14, opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
             className={[
-              "inline-flex items-center gap-1 self-end rounded-full border border-amber-500/30 px-3 py-1.5",
-              "text-xs font-bold text-amber-600 transition-colors duration-200 hover:bg-amber-500/10",
-              "dark:text-amber-500 sm:self-auto",
+              "pointer-events-auto flex w-auto max-w-[90vw] items-center gap-2 rounded-full",
+              "border px-4 py-2 backdrop-blur-xl sm:max-w-md",
+              "border-slate-200 bg-white/90 shadow-lg",
+              "dark:border-white/10 dark:bg-[#1C1C1E]/90",
             ].join(" ")}
           >
-            More AdBlockers &amp; VPN (16+)
-            <ChevronRight size={14} strokeWidth={2.5} aria-hidden="true" />
-          </Link>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={() => setDismissed(true)}
-        aria-label="Dismiss ad-blocker notice"
-        className="absolute right-3 top-3 z-10 flex items-center justify-center rounded-full p-1.5 text-slate-400 transition-colors hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
-      >
-        <X size={16} aria-hidden="true" />
-      </button>
+            <ShieldAlert size={14} className="shrink-0 text-amber-500" aria-hidden="true" />
+            <p className="min-w-0 truncate text-xs text-slate-700 dark:text-zinc-300">
+              Use{" "}
+              <strong className="font-semibold text-slate-900 dark:text-white">Brave</strong> or{" "}
+              <strong className="font-semibold text-slate-900 dark:text-white">uBlock</strong> to
+              block ads.
+            </p>
+            <button
+              type="button"
+              onClick={dismiss}
+              aria-label="Dismiss ad-blocker notice"
+              className="ml-1 flex shrink-0 cursor-pointer items-center justify-center text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-zinc-200"
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

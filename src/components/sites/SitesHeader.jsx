@@ -1,7 +1,7 @@
 import SteaLogo from "./SteaGlobeMark.jsx";
 import { useState, memo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Download, Sun, Moon } from "lucide-react";
+import { Download, Sun, Moon, ArrowRight } from "lucide-react";
 import { useSitesLanguage } from "../../i18n/index.js";
 import { usePWA } from "../../contexts/PWAContext.jsx";
 import { useSettings } from "../../contexts/SettingsContext.jsx";
@@ -48,18 +48,23 @@ function AccountButton({ user, onSignIn }) {
     <button
       type="button"
       className={[
-        "flex h-10 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-5 text-sm font-bold tracking-tight",
-        "bg-slate-900 text-white",
-        "shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_4px_12px_rgba(15,23,42,0.25)]",
-        "dark:bg-white dark:text-black",
-        "dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(0,0,0,0.1),0_4px_12px_rgba(255,255,255,0.15)]",
-        "transition-transform duration-200 ease-out hover:scale-105 active:scale-95",
+        "stea-member-pill group relative flex h-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap rounded-full",
+        "pl-5 pr-[46px] text-sm font-bold tracking-tight",
+        "bg-slate-900 text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
+        "dark:bg-white dark:text-black dark:shadow-[0_4px_12px_rgba(255,255,255,0.15)]",
+        "transition-all duration-300 ease-in-out hover:scale-105 active:scale-95",
       ].join(" ")}
       onClick={handleClick}
       aria-label={t("nav.signIn", "Sign In")}
       title={t("nav.signIn", "Sign In")}
     >
-      {t("nav.becomeMember", "Become a Member")}
+      <span className="stea-member-label relative z-0">{t("nav.becomeMember", "Become a Member")}</span>
+      <span
+        aria-hidden="true"
+        className="stea-member-chip absolute right-1 top-1 z-10 flex h-8 w-8 items-center justify-center rounded-[10px] bg-white text-slate-900 shadow-[0_1px_6px_rgba(0,0,0,0.28)] dark:bg-slate-900 dark:text-white dark:shadow-[0_1px_6px_rgba(0,0,0,0.35)]"
+      >
+        <ArrowRight size={16} strokeWidth={2.5} className="stea-member-arrow" />
+      </span>
     </button>
   );
 }

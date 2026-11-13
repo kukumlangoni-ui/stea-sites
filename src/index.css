@@ -3003,3 +3003,39 @@ html.stea-modal-open header[role="banner"] {
   border-radius: 12px;
   border: 1px solid transparent;
 }
+
+/* ── Header primary CTA: morphing arrow pill ───────────────────────────────
+   Follows the "Get started" morph interaction: a squircle arrow chip sits
+   inside the pill, expands to fill it on hover/focus, and the label fades. */
+.stea-member-chip {
+  width: 2rem;
+  transition: width .32s cubic-bezier(.4, 0, .2, 1), transform .25s ease, background-color .3s ease;
+}
+.stea-member-label {
+  transition: opacity .22s ease, transform .32s cubic-bezier(.4, 0, .2, 1);
+}
+.stea-member-arrow {
+  transition: transform .25s ease;
+}
+.stea-member-pill:hover .stea-member-chip,
+.stea-member-pill:focus-visible .stea-member-chip {
+  width: calc(100% - 0.5rem);
+}
+.stea-member-pill:hover .stea-member-label,
+.stea-member-pill:focus-visible .stea-member-label {
+  opacity: 0;
+  transform: translateX(-4px);
+}
+.stea-member-pill:hover .stea-member-arrow {
+  transform: translateX(2px);
+}
+.stea-member-pill:active .stea-member-chip {
+  transform: scale(.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  .stea-member-chip,
+  .stea-member-label,
+  .stea-member-arrow { transition: none !important; }
+  .stea-member-pill:hover .stea-member-chip { width: 2rem; }
+  .stea-member-pill:hover .stea-member-label { opacity: 1; transform: none; }
+}

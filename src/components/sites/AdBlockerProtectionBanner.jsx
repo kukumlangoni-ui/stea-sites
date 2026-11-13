@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { ShieldAlert, X } from "lucide-react";
 
 /**
- * Compact single-row ad-blocker notice.
- * iOS-native styling: one line of copy, one dismiss target, zero chrome.
+ * Minimal single-line ad-blocker notice — an iOS pill, not an alert card.
+ * One line of copy, one dismiss target, no extra buttons or chrome.
  */
 export default function AdBlockerProtectionBanner() {
   const [dismissed, setDismissed] = useState(false);
@@ -13,17 +13,25 @@ export default function AdBlockerProtectionBanner() {
     <div
       role="region"
       aria-label="AdBlocker recommendation"
-      className="mx-4 mt-4 flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition-colors duration-300 dark:border-white/10 dark:bg-[#151515]"
+      className={[
+        "mx-auto mt-4 flex max-w-2xl items-center justify-between",
+        "w-[calc(100%-2rem)] rounded-2xl border px-3 py-2.5 sm:px-4 sm:py-3",
+        "border-slate-200 bg-white shadow-sm",
+        "dark:border-white/10 dark:bg-[#151515] dark:shadow-lg",
+        "transition-all duration-300",
+      ].join(" ")}
     >
-      <div className="flex min-w-0 items-center gap-2">
-        <ShieldAlert size={14} className="shrink-0 text-amber-500" aria-hidden="true" />
-        <p className="truncate text-xs text-slate-600 dark:text-zinc-300">
+      <div className="flex min-w-0 items-center">
+        <span className="mr-3 flex shrink-0 items-center" aria-hidden="true">
+          <ShieldAlert size={16} className="text-amber-500" />
+        </span>
+        <p className="min-w-0 truncate text-xs text-slate-600 dark:text-zinc-400 sm:text-sm">
           Use{" "}
           <a
             href="https://brave.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-white"
+            className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4 dark:text-white dark:decoration-zinc-600"
           >
             Brave
           </a>{" "}
@@ -32,7 +40,7 @@ export default function AdBlockerProtectionBanner() {
             href="https://ublockorigin.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-white"
+            className="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4 dark:text-white dark:decoration-zinc-600"
           >
             uBlock
           </a>{" "}
@@ -43,10 +51,10 @@ export default function AdBlockerProtectionBanner() {
       <button
         type="button"
         onClick={() => setDismissed(true)}
-        aria-label="Dismiss"
-        className="-mr-1 flex shrink-0 items-center justify-center rounded-full p-1 transition-colors duration-200 hover:bg-slate-100 dark:hover:bg-white/5"
+        aria-label="Dismiss ad-blocker notice"
+        className="-mr-1 ml-2 flex shrink-0 items-center justify-center rounded-full p-1 text-slate-400 transition-colors hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300"
       >
-        <X size={16} className="text-slate-400 dark:text-zinc-500" />
+        <X size={16} aria-hidden="true" />
       </button>
     </div>
   );

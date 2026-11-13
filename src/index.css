@@ -3003,39 +3003,35 @@ html.stea-modal-open header[role="banner"] {
   border-radius: 12px;
   border: 1px solid transparent;
 }
-
-/* ── Header primary CTA: morphing arrow pill ───────────────────────────────
-   Follows the "Get started" morph interaction: a squircle arrow chip sits
-   inside the pill, expands to fill it on hover/focus, and the label fades. */
-.stea-member-chip {
-  width: 2rem;
-  transition: width .32s cubic-bezier(.4, 0, .2, 1), transform .25s ease, background-color .3s ease;
+   Gradient sweep + inner/outer light, adapted from the "Donate now" glossy
+   button: 280% background swept on hover, inset rim light for the 3D body. */
+.stea-member-gloss {
+  background-image: linear-gradient(325deg, #E08A00 0%, #FFC85A 55%, #E08A00 90%);
+  background-size: 280% auto;
+  background-position: left top;
+  box-shadow:
+    0 0 18px rgba(245, 166, 35, .45),
+    0 5px 6px -1px rgba(217, 119, 6, .28),
+    inset 3px 3px 8px rgba(255, 243, 208, .55),
+    inset -4px -4px 8px rgba(176, 96, 0, .38);
+  transition: background-position .8s ease, box-shadow .3s ease, transform .2s ease;
 }
-.stea-member-label {
-  transition: opacity .22s ease, transform .32s cubic-bezier(.4, 0, .2, 1);
+.stea-member-gloss:hover {
+  background-position: right top;
+  box-shadow:
+    0 0 26px rgba(245, 166, 35, .6),
+    0 6px 10px -2px rgba(217, 119, 6, .32),
+    inset 3px 3px 8px rgba(255, 246, 220, .65),
+    inset -4px -4px 8px rgba(176, 96, 0, .38);
 }
-.stea-member-arrow {
-  transition: transform .25s ease;
-}
-.stea-member-pill:hover .stea-member-chip,
-.stea-member-pill:focus-visible .stea-member-chip {
-  width: calc(100% - 0.5rem);
-}
-.stea-member-pill:hover .stea-member-label,
-.stea-member-pill:focus-visible .stea-member-label {
-  opacity: 0;
-  transform: translateX(-4px);
-}
-.stea-member-pill:hover .stea-member-arrow {
-  transform: translateX(2px);
-}
-.stea-member-pill:active .stea-member-chip {
-  transform: scale(.96);
+.stea-member-gloss:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px var(--stea-page, #000),
+    0 0 0 6px #F5A623,
+    0 0 18px rgba(245, 166, 35, .45);
 }
 @media (prefers-reduced-motion: reduce) {
-  .stea-member-chip,
-  .stea-member-label,
-  .stea-member-arrow { transition: none !important; }
-  .stea-member-pill:hover .stea-member-chip { width: 2rem; }
-  .stea-member-pill:hover .stea-member-label { opacity: 1; transform: none; }
+  .stea-member-gloss { transition: none; }
+  .stea-member-gloss:hover { background-position: left top; }
 }

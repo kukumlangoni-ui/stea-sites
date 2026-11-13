@@ -1,7 +1,7 @@
 import SteaLogo from "./SteaGlobeMark.jsx";
 import { useState, memo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Download, Sun, Moon, ArrowRight } from "lucide-react";
+import { Download, Sun, Moon } from "lucide-react";
 import { useSitesLanguage } from "../../i18n/index.js";
 import { usePWA } from "../../contexts/PWAContext.jsx";
 import { useSettings } from "../../contexts/SettingsContext.jsx";
@@ -48,23 +48,15 @@ function AccountButton({ user, onSignIn }) {
     <button
       type="button"
       className={[
-        "stea-member-pill group relative flex h-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap rounded-full",
-        "pl-5 pr-[46px] text-sm font-bold tracking-tight",
-        "bg-slate-900 text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
-        "dark:bg-white dark:text-black dark:shadow-[0_4px_12px_rgba(255,255,255,0.15)]",
-        "transition-all duration-300 ease-in-out hover:scale-105 active:scale-95",
+        "stea-member-gloss relative flex h-10 shrink-0 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl px-5",
+        "text-sm font-bold tracking-tight text-black",
+        "transition-transform duration-200 ease-out hover:scale-[1.02] active:translate-y-px active:scale-[0.99]",
       ].join(" ")}
       onClick={handleClick}
       aria-label={t("nav.signIn", "Sign In")}
       title={t("nav.signIn", "Sign In")}
     >
-      <span className="stea-member-label relative z-0">{t("nav.becomeMember", "Become a Member")}</span>
-      <span
-        aria-hidden="true"
-        className="stea-member-chip absolute right-1 top-1 z-10 flex h-8 w-8 items-center justify-center rounded-[10px] bg-white text-slate-900 shadow-[0_1px_6px_rgba(0,0,0,0.28)] dark:bg-slate-900 dark:text-white dark:shadow-[0_1px_6px_rgba(0,0,0,0.35)]"
-      >
-        <ArrowRight size={16} strokeWidth={2.5} className="stea-member-arrow" />
-      </span>
+      <span className="relative z-10">{t("nav.becomeMember", "Become a Member")}</span>
     </button>
   );
 }
